@@ -1,0 +1,97 @@
+<header class="app-header">
+  <div class="header-left">
+    <button class="btn-hamburger" title="Menu">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+
+    <div class="fpt-brand">
+      <svg class="fpt-logo-svg" viewBox="0 0 76 26" width="58" height="20">
+        <g transform="skewX(-16)">
+          <path d="M6 3 H19 V21 H6 Z" fill="#F37021" rx="4"/>
+          <path d="M22 3 H35 V21 H22 Z" fill="#009E49" rx="4"/>
+          <path d="M38 3 H51 V21 H38 Z" fill="#0072BC" rx="4"/>
+        </g>
+        <text x="10" y="17" fill="#fff" font-size="12" font-weight="900" font-family="'Arial Black', sans-serif">F</text>
+        <text x="26" y="17" fill="#fff" font-size="12" font-weight="900" font-family="'Arial Black', sans-serif">P</text>
+        <text x="43" y="17" fill="#fff" font-size="12" font-weight="900" font-family="'Arial Black', sans-serif">T</text>
+      </svg>
+    </div>
+
+    <span class="app-title">sWork - Quản lý công việc</span>
+  </div>
+
+  <div class="header-center">
+    <div class="header-search-box">
+      <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input type="text" placeholder="Tìm công việc, dự án hoặc phòng ban" [(ngModel)]="searchKeyword" (keyup.enter)="onSearch()" (ngModelChange)="onSearch()">
+    </div>
+  </div>
+
+  <div class="header-right">
+    <!-- Country Flag -->
+    <div class="flag-btn" title="Tiếng Việt">
+      <svg viewBox="0 0 30 20" width="22" height="15" class="vn-flag">
+        <rect width="30" height="20" fill="#DA251D"/>
+        <polygon points="15,4 16.5,8.8 21.5,8.8 17.5,11.8 19,16.5 15,13.5 11,16.5 12.5,11.8 8.5,8.8 13.5,8.8" fill="#FFFF00"/>
+      </svg>
+    </div>
+
+    <!-- Quick Action Button with FlxButton -->
+    <button flxButton status="primary" class="btn-create-task" (click)="onCreateQuickTask()">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      <span>Tạo công việc</span>
+    </button>
+
+    <!-- Notification Bell -->
+    <div class="header-icon-btn">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+      </svg>
+      <span class="badge-dot">9+</span>
+    </div>
+
+    <!-- App Launcher (9 dots) -->
+    <div class="header-icon-btn" title="Ứng dụng">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+        <circle cx="5" cy="5" r="2"></circle>
+        <circle cx="12" cy="5" r="2"></circle>
+        <circle cx="19" cy="5" r="2"></circle>
+        <circle cx="5" cy="12" r="2"></circle>
+        <circle cx="12" cy="12" r="2"></circle>
+        <circle cx="19" cy="12" r="2"></circle>
+        <circle cx="5" cy="19" r="2"></circle>
+        <circle cx="12" cy="19" r="2"></circle>
+        <circle cx="19" cy="19" r="2"></circle>
+      </svg>
+    </div>
+
+    <!-- User Profile Avatar -->
+    <div class="user-switcher-container">
+      <div class="header-avatar" (click)="toggleDropdown()" title="Đỗ Khang (System owner)">
+        ĐK
+      </div>
+
+      <div class="user-dropdown" *ngIf="showDropdown">
+        <div class="dropdown-header">Chuyển đổi tài khoản (Demo)</div>
+        <div class="dropdown-item" *ngFor="let u of users" (click)="selectUser(u)" [class.active]="currentUser && u.id === currentUser.id">
+          <div class="avatar avatar-sm" [style.background-color]="u.avatarColor">{{ u.shortName }}</div>
+          <div class="dropdown-user-detail">
+            <div class="name">{{ u.fullName }}</div>
+            <div class="role-badge">{{ u.role }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

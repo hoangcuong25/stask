@@ -1,0 +1,97 @@
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Nhật ký chấm giờ (Worklogs)</h1>
+      <p class="page-subtitle">Theo dõi chấm công, phân bổ thời gian thực tế và chi tiết công việc</p>
+    </div>
+    <button class="btn btn-primary" (click)="openLogModal()">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+      Chấm giờ làm việc
+    </button>
+  </div>
+
+  <!-- Stats overview cards -->
+  <div class="stats-row">
+    <div class="card stat-card">
+      <div class="stat-label">Tổng giờ đã chấm</div>
+      <div class="stat-value text-primary">{{ getTotalHours() }} giờ</div>
+    </div>
+    <div class="card stat-card">
+      <div class="stat-label">Hôm nay</div>
+      <div class="stat-value text-success">9.0 giờ</div>
+    </div>
+    <div class="card stat-card">
+      <div class="stat-label">Tuần này</div>
+      <div class="stat-value text-purple">12.0 giờ</div>
+    </div>
+  </div>
+
+  <!-- Worklog Table -->
+  <div class="card table-wrapper">
+    <table class="worklog-table">
+      <thead>
+        <tr>
+          <th width="140">Thời gian</th>
+          <th width="140">Mã Công việc</th>
+          <th width="180">Người thực hiện</th>
+          <th width="120">Thời lượng</th>
+          <th>Nội dung công việc thực hiện</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let wl of worklogs">
+          <td class="date-cell">{{ wl.workDate | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td><span class="task-key">WEB-105</span></td>
+          <td>
+            <div class="user-cell">
+              <div class="avatar avatar-sm">NL</div>
+              <span>Nguyễn Lan</span>
+            </div>
+          </td>
+          <td>
+            <span class="duration-badge">{{ (wl.durationMinutes / 60).toFixed(1) }} giờ</span>
+            <span class="mins-sub">({{ wl.durationMinutes }} phút)</span>
+          </td>
+          <td class="note-cell">{{ wl.note || '--' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal Chấm Giờ -->
+  <div class="modal-backdrop" *ngIf="showModal" (click)="showModal = false">
+    <div class="modal-content card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Ghi nhận nhật ký chấm giờ mới</h3>
+        <button class="close-btn" (click)="showModal = false">✕</button>
+      </div>
+      <div class="modal-form">
+        <div class="form-group">
+          <label>Công việc liên quan</label>
+          <select [(ngModel)]="selectedTaskId" class="form-control">
+            <option *ngFor="let t of availableTasks" [value]="t.id">{{ t.taskKey }} - {{ t.title }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Thời lượng làm việc (Số phút)</label>
+          <input type="number" [(ngModel)]="durationMinutes" class="form-control" placeholder="180" min="15" step="15">
+          <span class="field-hint">Tương đương {{ (durationMinutes / 60).toFixed(1) }} giờ</span>
+        </div>
+
+        <div class="form-group">
+          <label>Nội dung ghi chú công việc</label>
+          <textarea [(ngModel)]="note" class="form-control" rows="3" placeholder="Mô tả các đầu việc đã giải quyết..."></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-default" (click)="showModal = false">Hủy</button>
+          <button class="btn btn-primary" (click)="submitWorklog()">Lưu chấm giờ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

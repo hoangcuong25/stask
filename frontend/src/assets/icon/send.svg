@@ -1,0 +1,5 @@
+<svg width="16" height="16" fill="none" color="red">
+  <g class="ic-Resend">
+    <path d="m12.794 6.294-1.31-1.315c-.944-.947-1.314-1.457-1.825-1.277-.637.225-.428 1.642-.428 2.121-.99 0-2.02-.088-2.998.095C3.008 6.524 2 9.143 2 12c.913-.647 1.825-1.335 2.922-1.635 1.369-.374 2.898-.196 4.31-.196 0 .479-.21 1.896.427 2.12.58.205.881-.329 1.825-1.276l1.31-1.315C13.598 8.892 14 8.488 14 7.996s-.402-.896-1.206-1.702" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="Vector" vector-effect="non-scaling-stroke" />
+  </g>
+</svg>

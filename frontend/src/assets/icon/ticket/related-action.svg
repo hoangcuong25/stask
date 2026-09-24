@@ -1,0 +1,8 @@
+<svg width="16" height="16" fill="none">
+  <g class="33-icon- user-group" stroke="currentColor" stroke-width="1.2">
+    <path d="M13.85 12c.499 0 .896-.314 1.253-.754.73-.9-.469-1.619-.926-1.97a2.9 2.9 0 0 0-1.51-.61M12 7.334A1.667 1.667 0 1 0 12 4" stroke-linecap="round" class="Vector"/>
+    <path d="M2.15 12c-.5 0-.896-.314-1.253-.754-.73-.9.469-1.619.926-1.97a2.9 2.9 0 0 1 1.51-.61m.333-1.333a1.667 1.667 0 0 1 0-3.333" stroke-linecap="round" class="Vector"/>
+    <path d="M5.389 10.074c-.681.421-2.467 1.281-1.38 2.358.532.525 1.124.901 1.868.901h4.246c.744 0 1.336-.376 1.867-.901 1.088-1.077-.698-1.937-1.38-2.358a4.971 4.971 0 0 0-5.221 0Z" stroke-linecap="round" stroke-linejoin="round" class="Vector"/>
+    <path d="M10.333 5a2.333 2.333 0 1 1-4.667 0 2.333 2.333 0 0 1 4.667 0Z" class="Ellipse 1381"/>
+  </g>
+</svg>

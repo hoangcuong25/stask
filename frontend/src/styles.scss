@@ -1,0 +1,328 @@
+/* ==========================================================================
+   sWork Enterprise Design System (FIS Flx-UI / Ant Design Theme)
+   ========================================================================== */
+
+@import '@fpt-is/flx-ui/themes/style-common/color.scss';
+@import '@fpt-is/flx-ui/themes/style-common/typography.scss';
+@import '@fpt-is/flx-ui/themes/style-common/spacing.scss';
+@import '@fpt-is/flx-ui/themes/style-common/spacing.variable.scss';
+@import '@fpt-is/flx-ui/themes/style-common/spacing-size.variable.scss';
+@import '@fpt-is/flx-ui/themes/style-common/border.scss';
+@import '@fpt-is/flx-ui/themes/style-common/sizing.scss';
+@import '@fpt-is/flx-ui/themes/style-common/box-shadow.scss';
+@import '@fpt-is/flx-ui/themes/style-common/breakpoint-function.scss';
+
+:root {
+  --primary-color: #0F63D1;
+  --primary-hover: #247CEF;
+  --primary-active: #0C4DA2;
+  --primary-bg: #ECF4FE;
+  
+  --success-color: #12B76A;
+  --success-bg: #ECFDF3;
+  --success-border: #A6F4C5;
+  
+  --warning-color: #F79009;
+  --warning-bg: #FFFAEB;
+  --warning-border: #FEDF89;
+  
+  --error-color: #F04438;
+  --error-bg: #FEF3F2;
+  --error-border: #FECDCA;
+  
+  --info-color: #0F63D1;
+  --purple-color: #7A5AF8;
+  --purple-bg: #F4EBFF;
+  --purple-border: #D6BBFB;
+
+  --sidebar-bg: #ffffff;
+  --sidebar-border: #EAECF0;
+  --sidebar-active: #ECF4FE;
+  --sidebar-active-text: #0F63D1;
+  --sidebar-hover: #F9FAFB;
+  --sidebar-text: #344054;
+  --sidebar-text-muted: #667085;
+
+  --body-bg: #F8F9FC;
+  --surface-bg: #ffffff;
+  --border-color: #EAECF0;
+  --border-subtle: #D0D5DD;
+  
+  --text-primary: #1D2939;
+  --text-secondary: #475467;
+  --text-muted: #667085;
+  --text-disabled: #98A2B3;
+
+  --table-header-blue: #0F63D1;
+
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.05);
+  --shadow-md: 0 4px 8px -2px rgba(16, 24, 40, 0.1), 0 2px 4px -2px rgba(16, 24, 40, 0.06);
+  --shadow-lg: 0 12px 16px -4px rgba(16, 24, 40, 0.08), 0 4px 6px -2px rgba(16, 24, 40, 0.03);
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-pill: 9999px;
+
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.2s ease;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--body-bg);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  outline: none;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+/* Flx utility classes */
+.flx-pointer {
+  cursor: pointer;
+}
+
+.flx-text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Button Component Styles matching FIS flx-ui */
+.btn, [flxButton] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  border: 1px solid transparent;
+  text-decoration: none;
+  line-height: 1.4;
+
+  &.btn-primary, &[status="primary"] {
+    background-color: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+
+    &:hover {
+      background-color: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
+  }
+
+  &.btn-default, &[status="default"] {
+    background-color: #fff;
+    color: var(--text-primary);
+    border-color: var(--border-subtle);
+
+    &:hover {
+      color: var(--primary-color);
+      border-color: var(--primary-color);
+      background-color: #F9FAFB;
+    }
+  }
+
+  &.btn-info, &[status="info"] {
+    background-color: var(--primary-bg);
+    color: var(--primary-color);
+    border-color: var(--primary-bg);
+
+    &:hover {
+      background-color: #BCD7FA;
+    }
+  }
+
+  &.btn-danger, &[status="danger"] {
+    background-color: var(--error-color);
+    color: #fff;
+    border-color: var(--error-color);
+
+    &:hover {
+      background-color: #D92D20;
+    }
+  }
+
+  &.btn-success, &[status="success"] {
+    background-color: var(--success-color);
+    color: #fff;
+    border-color: var(--success-color);
+
+    &:hover {
+      background-color: #039855;
+    }
+  }
+
+  &.btn-sm, &[size="sm"] {
+    padding: 3px 10px;
+    font-size: 12px;
+  }
+
+  &.btn-md, &[size="md"] {
+    padding: 7px 16px;
+    font-size: 13px;
+  }
+
+  &:disabled, &.btn-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.card {
+  background: var(--surface-bg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-normal);
+
+  &:hover {
+    box-shadow: var(--shadow-md);
+  }
+}
+
+/* Flx & sWork Status Badges */
+.flx-badge, .badge-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+
+  &.TODO, &.status-todo {
+    background: #F2F4F7;
+    border: 1px solid #EAECF0;
+    color: #475467;
+  }
+
+  &.IN_PROGRESS, &.status-in_progress {
+    background: var(--primary-bg);
+    border: 1px solid #BCD7FA;
+    color: var(--primary-active);
+  }
+
+  &.IN_REVIEW, &.status-in_review {
+    background: var(--purple-bg);
+    border: 1px solid var(--purple-border);
+    color: var(--purple-color);
+  }
+
+  &.DONE, &.status-done {
+    background: var(--success-bg);
+    border: 1px solid var(--success-border);
+    color: #027A48;
+  }
+
+  &.FAILED, &.status-failed {
+    background: var(--error-bg);
+    border: 1px solid var(--error-border);
+    color: #B42318;
+  }
+}
+
+/* Priority Badges */
+.badge-priority {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+
+  &.URGENT {
+    background: #FEF3F2;
+    color: #F04438;
+    border: 1px solid #FECDCA;
+  }
+
+  &.HIGH {
+    background: #FFFAEB;
+    color: #F79009;
+    border: 1px solid #FEDF89;
+  }
+
+  &.MEDIUM {
+    background: #ECF4FE;
+    color: #0F63D1;
+    border: 1px solid #BCD7FA;
+  }
+
+  &.LOW {
+    background: #F2F4F7;
+    color: #667085;
+    border: 1px solid #EAECF0;
+  }
+}
+
+/* Flx Avatar & User Avatar */
+.flx-avatar, .avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  background-color: var(--primary-color);
+  user-select: none;
+  flex-shrink: 0;
+
+  &.avatar-sm {
+    width: 22px;
+    height: 22px;
+    font-size: 10px;
+  }
+
+  &.avatar-lg {
+    width: 36px;
+    height: 36px;
+    font-size: 13px;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #D0D5DD;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #98A2B3;
+}

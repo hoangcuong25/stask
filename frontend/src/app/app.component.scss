@@ -1,0 +1,21 @@
+.swork-layout {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--body-bg);
+}
+
+.swork-body {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 54px);
+  overflow: hidden;
+}
+
+.swork-content-area {
+  flex: 1;
+  overflow-y: auto;
+  background: #ffffff;
+}

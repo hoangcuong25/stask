@@ -1,0 +1,462 @@
+.page-container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.project-header {
+  padding: 20px 24px 0;
+}
+
+.header-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.project-identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.project-code-badge {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #1890ff, #096dd9);
+  padding: 8px 14px;
+  border-radius: 8px;
+}
+
+.project-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #262626;
+}
+
+.project-meta-line {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+  color: #8c8c8c;
+  margin-top: 4px;
+}
+
+.meta-tag {
+  background: #f5f5f5;
+  color: #595959;
+  padding: 1px 8px;
+  border-radius: 4px;
+  font-size: 11.5px;
+}
+
+.progress-widget {
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.progress-bar-container {
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #52c41a;
+  transition: width 0.3s ease;
+}
+
+.progress-stats-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.percent-val {
+  font-weight: 600;
+  color: #52c41a;
+}
+
+.counts-val {
+  color: #8c8c8c;
+}
+
+.project-subtabs {
+  display: flex;
+  gap: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.subtab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #595959;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.2s;
+
+  &:hover {
+    color: #1890ff;
+  }
+
+  &.active {
+    color: #1890ff;
+    font-weight: 600;
+    border-bottom-color: #1890ff;
+  }
+}
+
+/* Kanban Board */
+.kanban-board {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+}
+
+.stage-column {
+  width: 290px;
+  min-width: 290px;
+  background: #f7f9fa;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  max-height: calc(100vh - 250px);
+}
+
+.stage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e8e8e8;
+  margin-bottom: 12px;
+}
+
+.stage-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stage-pos {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #1890ff;
+  color: #fff;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.stage-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.stage-badge {
+  background: #e8e8e8;
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  color: #595959;
+}
+
+.stage-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.task-kanban-card {
+  padding: 12px;
+  cursor: pointer;
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #e8e8e8;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-color: #91d5ff;
+  }
+}
+
+.card-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #262626;
+  line-height: 1.4;
+}
+
+.card-bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.bottom-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ck-pill {
+  font-size: 10.5px;
+  background: #f5f5f5;
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: #8c8c8c;
+}
+
+.add-task-stage-btn {
+  padding: 8px;
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  background: transparent;
+  color: #8c8c8c;
+  font-size: 12px;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: #1890ff;
+    color: #1890ff;
+  }
+}
+
+/* List View Table */
+.tasks-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  th {
+    background: #fafafa;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 12px;
+    color: #8c8c8c;
+    text-align: left;
+  }
+
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+}
+
+.task-row {
+  cursor: pointer;
+
+  &:hover {
+    background: #fafafa;
+  }
+}
+
+/* Discussions View */
+.discussion-view {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .discussion-composer textarea {
+    width: 100%;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 13px;
+    resize: vertical;
+  }
+
+  .composer-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .discussion-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+}
+
+.comment-item {
+  display: flex;
+  gap: 12px;
+}
+
+.comment-bubble {
+  background: #f7f9fa;
+  padding: 10px 14px;
+  border-radius: 8px;
+  flex: 1;
+}
+
+.comment-author {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #262626;
+  display: flex;
+  gap: 10px;
+}
+
+.comment-time {
+  font-size: 11px;
+  color: #8c8c8c;
+  font-weight: normal;
+}
+
+.comment-content {
+  font-size: 13px;
+  color: #595959;
+  margin-top: 4px;
+}
+
+/* Documents & Goals View */
+.documents-view, .goals-view {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .docs-header, .goals-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.doc-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.doc-icon {
+  font-size: 20px;
+}
+
+.doc-meta {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.doc-name {
+  font-weight: 500;
+  color: #262626;
+}
+
+.doc-size {
+  font-size: 11.5px;
+  color: #8c8c8c;
+}
+
+.goal-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid #f0f0f0;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.goal-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.goal-date {
+  font-size: 12px;
+  color: #8c8c8c;
+  margin-top: 4px;
+}
+
+/* Settings View */
+.settings-view {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.settings-title {
+  font-size: 18px;
+  font-weight: 700;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+
+.settings-section h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1890ff;
+  margin-bottom: 10px;
+}
+
+.setting-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 12px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #595959;
+  cursor: pointer;
+}
+
+.save-actions {
+  border-top: 1px solid #f0f0f0;
+  padding-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.task-key {
+  font-weight: 600;
+  color: #1890ff;
+  background: #e6f7ff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11.5px;
+}

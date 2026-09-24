@@ -1,0 +1,143 @@
+<div class="personal-plan-page">
+  <!-- Breadcrumb -->
+  <div class="breadcrumb-bar">
+    <svg class="home-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+    <span class="crumb">SWork</span>
+    <span class="divider">/</span>
+    <span class="crumb">Công việc</span>
+    <span class="divider">/</span>
+    <span class="crumb active">Kế hoạch cá nhân</span>
+  </div>
+
+  <!-- KPI Metric Summary Cards -->
+  <div class="kpi-metrics-row">
+    <div class="kpi-card">
+      <span class="kpi-label">Chưa sắp xếp</span>
+      <span class="kpi-val val-unplanned">{{ getUnplannedCount() }}</span>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Hôm nay</span>
+      <span class="kpi-val val-today">{{ getTodayCount() }}</span>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Đã xếp lịch</span>
+      <span class="kpi-val val-scheduled">{{ getScheduledCount() }}</span>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Đã xong</span>
+      <span class="kpi-val val-completed">{{ getCompletedCount() }}</span>
+    </div>
+  </div>
+
+  <!-- Filter & Action Toolbar -->
+  <div class="plan-toolbar">
+    <div class="filter-left">
+      <!-- Search Input -->
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" placeholder="Tìm việc" [(ngModel)]="searchKeyword" (ngModelChange)="filterTasks()">
+      </div>
+
+      <!-- Workspace / Project Filter -->
+      <div class="workspace-select-wrapper">
+        <select [(ngModel)]="selectedProject" (ngModelChange)="filterTasks()">
+          <option value="">Tất cả không gian</option>
+          <option *ngFor="let p of projects" [value]="p.id">{{ p.name }}</option>
+        </select>
+        <svg class="select-chevron" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Right Toggle -->
+    <div class="filter-right">
+      <label class="include-completed-toggle">
+        <input type="checkbox" [(ngModel)]="includeCompleted" (ngModelChange)="filterTasks()">
+        <span>Kể cả đã xong</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- 4 Columns Kanban Board for Personal Plan -->
+  <div class="plan-columns-container">
+    <div class="plan-column" *ngFor="let col of getColumns()">
+      <!-- Column Header -->
+      <div class="column-header">
+        <div class="col-title-left">
+          <span class="col-dot" [style.background-color]="col.dotColor"></span>
+          <span class="col-label">{{ col.label }}</span>
+        </div>
+        <span class="col-count-badge">{{ col.tasks.length }}</span>
+      </div>
+
+      <!-- Card List in Column -->
+      <div class="column-card-list">
+        <div class="plan-card" *ngFor="let task of col.tasks" (click)="openTaskModal(task)">
+          <!-- Top: Project Name -->
+          <div class="card-proj-name">
+            {{ task.project.name || 'Triển khai website doanh nghiệp' }}
+          </div>
+
+          <!-- Title -->
+          <div class="card-task-title" [class.completed]="task.isCompleted">
+            {{ task.title }}
+          </div>
+
+          <!-- Middle: Status badge + Priority bullet + Due date -->
+          <div class="card-middle-row">
+            <div class="status-and-priority">
+              <span class="badge-status" [ngClass]="'status-' + task.status.toLowerCase()">
+                {{ getStatusText(task.status) }}
+              </span>
+              <span class="priority-bullet" [style.background-color]="getPriorityBulletColor(task.priority)"></span>
+            </div>
+            <span class="card-due-date">{{ formatDueDate(task.dueDate) }}</span>
+          </div>
+
+          <!-- Bottom: Bucket selector dropdown + Hours -->
+          <div class="card-bottom-row" (click)="$event.stopPropagation()">
+            <div class="bucket-dropdown-wrapper">
+              <svg class="cal-icon" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              <select [ngModel]="getTaskBucket(task)" (ngModelChange)="setTaskBucket(task, $event, $event)">
+                <option value="UNPLANNED">Chưa sắp xếp</option>
+                <option value="TODAY">Hôm nay</option>
+                <option value="THIS_WEEK">Tuần này</option>
+                <option value="LATER">Để sau</option>
+              </select>
+              <svg class="arrow-down" viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+            <span class="card-hours">{{ (task.estimation.estimatedHours || task.estimation.spentHours || 8) }}h</span>
+          </div>
+        </div>
+
+        <!-- Empty state in column -->
+        <div class="empty-column-box" *ngIf="col.tasks.length === 0">
+          Chưa có công việc nào
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task Detail Modal -->
+  <app-task-modal
+    *ngIf="selectedTask"
+    [task]="selectedTask"
+    (close)="closeTaskModal()"
+    (closeEvent)="closeTaskModal()"
+    (taskUpdated)="onTaskUpdated($event)">
+  </app-task-modal>
+</div>

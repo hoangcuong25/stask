@@ -1,0 +1,12 @@
+<svg width="16" height="16" fill="none">
+  <defs>
+    <clipPath id="a" class="a">
+      <path fill="#fff" d="M0 0h16v16H0z"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#a)" class="ic_Add" stroke="currentColor" stroke-width="1.2">
+    <path d="M8.334 14.667h-3.94c-1.03 0-1.85-.502-2.585-1.203-1.507-1.435.966-2.581 1.91-3.143A7.098 7.098 0 0 1 10 9.854" stroke-linecap="round" stroke-linejoin="round" class="Vector"/>
+    <path d="M11 4.333a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" class="Ellipse 1381"/>
+    <path d="M12.333 14.667V10M10 12.333h4.667" stroke-linecap="round" class="Vector"/>
+  </g>
+</svg>

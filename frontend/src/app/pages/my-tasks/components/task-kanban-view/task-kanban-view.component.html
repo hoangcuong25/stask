@@ -1,0 +1,72 @@
+<div class="kanban-view-container">
+  <div class="kanban-board">
+    <div class="kanban-column" *ngFor="let col of getKanbanColumns()">
+      <!-- Column Header -->
+      <div class="kanban-column-header">
+        <div class="col-header-left">
+          <span class="col-title-text">{{ col.label }}</span>
+          <span class="col-task-badge">{{ col.tasks.length }}</span>
+        </div>
+      </div>
+
+      <!-- Column Card List -->
+      <div class="kanban-card-list">
+        <div class="kanban-task-card card" *ngFor="let task of col.tasks" (click)="onSelect(task)">
+          <div class="card-top-bar">
+            <span class="task-key-tag">{{ task.taskKey }}</span>
+            <span class="badge-priority" [ngClass]="task.priority">
+              {{ getPriorityText(task.priority) }}
+            </span>
+          </div>
+
+          <div class="card-task-title" [class.completed]="task.isCompleted">
+            {{ task.title }}
+          </div>
+
+          <div class="card-meta-line">
+            <span class="proj-badge">{{ task.project.code || 'WEB' }}</span>
+            <span class="checklist-pill" *ngIf="task.checklistSummary">{{ task.checklistSummary }}</span>
+          </div>
+
+          <div class="card-footer-line">
+            <div class="assignee-cell">
+              <div class="avatar avatar-sm" [style.background-color]="task.assignee?.avatarColor || '#0F63D1'">
+                {{ task.assignee?.shortName || 'NL' }}
+              </div>
+              <span class="assignee-name">{{ task.assignee?.fullName || 'Nguyễn Lan' }}</span>
+            </div>
+            <span class="due-date-text">{{ formatDueDate(task.dueDate) }}</span>
+          </div>
+
+          <!-- Quick Kanban Move Buttons with FlxButton -->
+          <div class="card-action-bar" (click)="$event.stopPropagation()">
+            <button
+              flxButton
+              status="default"
+              size="sm"
+              class="btn-kanban-shift"
+              *ngIf="task.status !== 'TODO'"
+              (click)="moveTaskPrev(task, $event)"
+              title="Chuyển về bước trước">
+              ◀ Lùi
+            </button>
+            <button
+              flxButton
+              status="primary"
+              size="sm"
+              class="btn-kanban-shift"
+              *ngIf="task.status !== 'DONE'"
+              (click)="moveTaskNext(task, $event)"
+              title="Chuyển sang bước tiếp theo">
+              Tiến ▶
+            </button>
+          </div>
+        </div>
+
+        <div class="kanban-empty-col" *ngIf="col.tasks.length === 0">
+          Chưa có công việc ở cột này
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

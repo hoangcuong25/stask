@@ -1,0 +1,15 @@
+<svg width="16" height="16" fill="none" color="#f00">
+  <defs>
+    <clipPath>
+      <path fill="#fff" d="M0 0h16v16H0z" />
+    </clipPath>
+  </defs>
+  <g clip-path="url(#a)">
+    <g stroke="currentColor" stroke-width="1.2">
+      <path d="M1.333 8.267c0-2.012 0-3.017.631-3.642S3.611 4 5.641 4h.718c2.03 0 3.046 0 3.677.625.63.625.63 1.63.63 3.642V10.4c0 2.011 0 3.017-.63 3.642s-1.646.625-3.677.625h-.718c-2.03 0-3.046 0-3.677-.625-.63-.625-.63-1.63-.63-3.642V8.267Z" stroke-linejoin="round" />
+      <path d="M10.359 10.667h.615c1.741 0 2.611 0 3.152-.547s.541-1.427.541-3.186V5.067c0-1.76 0-2.64-.54-3.187-.542-.546-1.412-.546-3.153-.546h-.615c-1.741 0-2.611 0-3.152.546-.473.478-.533 1.211-.54 2.565" stroke-linejoin="round" />
+      <path d="M4 8h2m-2 3.333h3.333" stroke-linecap="round" />
+      <path d="m7 2 2.667 2.333" stroke-linejoin="round" />
+    </g>
+  </g>
+</svg>

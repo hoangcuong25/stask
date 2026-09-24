@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 16 16" color="red">
+  <g class="hard-drive">
+    <g class="elements" stroke="currentColor">
+      <path stroke-width="1.5" d="m13.807 5.8.806 2.686c.026.087.039.13.046.175l.002.014c.006.044.006.09.006.18 0 2.332 0 3.497-.68 4.256a3 3 0 0 1-.209.21c-.76.679-1.925.679-4.256.679H6.478c-2.331 0-3.497 0-4.256-.68a3 3 0 0 1-.21-.209c-.679-.759-.679-1.925-.679-4.256 0-.09 0-.136.007-.18l.002-.014c.007-.045.02-.088.046-.175L2.193 5.8c.55-1.831.824-2.747 1.533-3.274C4.434 2 5.39 2 7.302 2h1.397c1.911 0 2.867 0 3.576.527.708.527.983 1.443 1.532 3.274Z" class="Vector"/>
+      <path stroke-linejoin="round" stroke-width="1.5" d="M1.333 8.667h13.334" class="Vector"/>
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.992 11.333H12m-3.334 0h.008" class="Vector"/>
+    </g>
+  </g>
+</svg>

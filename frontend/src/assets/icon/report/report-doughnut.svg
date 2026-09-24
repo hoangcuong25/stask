@@ -1,0 +1,24 @@
+<svg width="21" height="21" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg">
+  <!-- phần nền nhạt -->
+  <circle
+    cx="10.5"
+    cy="10.5"
+    r="7"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="6"
+    opacity="0.4"
+  />
+
+  <!-- phần đậm (25%) -->
+  <circle
+    cx="10.5"
+    cy="10.5"
+    r="7"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="6"
+    stroke-dasharray="11 44"
+    transform="rotate(-90 10.5 10.5)"
+  />
+</svg>

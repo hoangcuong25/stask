@@ -1,0 +1,27 @@
+<div class="gantt-view-container">
+  <div class="gantt-card card">
+    <div class="gantt-header">
+      <div class="gantt-col-task">CÔNG VIỆC</div>
+      <div class="gantt-timeline-header">
+        <span>Tuần 1</span>
+        <span>Tuần 2</span>
+        <span>Tuần 3</span>
+        <span>Tuần 4</span>
+      </div>
+    </div>
+    <div class="gantt-row" *ngFor="let task of tasks" (click)="onSelect(task)">
+      <div class="gantt-col-task">
+        <span class="task-key-tag">{{ task.taskKey }}</span>
+        <span class="task-title-gantt">{{ task.title }}</span>
+      </div>
+      <div class="gantt-col-bar">
+        <div class="gantt-bar" [class.completed]="task.isCompleted" [style.width]="task.isCompleted ? '90%' : '55%'">
+          {{ getStatusText(task.status) }} ({{ formatDueDate(task.dueDate) }})
+        </div>
+      </div>
+    </div>
+    <div class="gantt-empty" *ngIf="tasks.length === 0">
+      Không có công việc nào để hiển thị trên sơ đồ Gantt
+    </div>
+  </div>
+</div>

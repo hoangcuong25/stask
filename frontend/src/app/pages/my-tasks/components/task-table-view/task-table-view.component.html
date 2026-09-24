@@ -1,0 +1,230 @@
+<!-- Empty State -->
+<div class="empty-state card" *ngIf="tasks.length === 0">
+  <div class="empty-icon">📋</div>
+  <h3>Không có công việc nào phù hợp</h3>
+  <p>Thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm để xem các công việc khác.</p>
+</div>
+
+<!-- ======================================================== -->
+<!-- VIEW 1: MẶC ĐỊNH (THEO GIAI ĐOẠN) -->
+<!-- ======================================================== -->
+<div class="default-view-container" *ngIf="currentViewMode === 'DEFAULT' && tasks.length > 0">
+  <!-- Solid Blue Table Header Bar -->
+  <div class="stage-table-header">
+    <div class="col-title">CÔNG VIỆC</div>
+    <div class="col-status">TRẠNG THÁI</div>
+    <div class="col-priority">ƯU TIÊN</div>
+    <div class="col-assignee">NGƯỜI THỰC HIỆN</div>
+    <div class="col-date">HẠN HOÀN THÀNH</div>
+  </div>
+
+  <!-- Stage Groups -->
+  <div class="stage-groups-list">
+    <div class="stage-block" *ngFor="let group of getStageGroups()">
+      <div class="stage-header-row">
+        <span class="stage-title">{{ group.name }}</span>
+        <span class="stage-task-count">{{ group.tasks.length }} công việc</span>
+      </div>
+
+      <div class="stage-task-row" *ngFor="let task of group.tasks" (click)="onSelectTask(task)">
+        <div class="col-title">
+          <div class="task-checkbox" [class.checked]="task.isCompleted" (click)="onToggleComplete(task, $event)">
+            <svg *ngIf="task.isCompleted" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#0F63D1" stroke-width="3">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="task-meta-cell">
+            <span class="task-text-title" [class.completed]="task.isCompleted">{{ task.title }}</span>
+            <span class="task-subtext">{{ task.taskKey }} · {{ task.project.code || 'WEB' }} · {{ task.checklistSummary || '0/2 checklist' }}</span>
+          </div>
+        </div>
+
+        <div class="col-status">
+          <span class="badge-status" [ngClass]="'status-' + task.status.toLowerCase()">
+            {{ getStatusText(task.status) }}
+          </span>
+        </div>
+
+        <div class="col-priority">
+          <span class="badge-priority" [ngClass]="task.priority">
+            {{ getPriorityText(task.priority) }}
+          </span>
+        </div>
+
+        <div class="col-assignee">
+          <div class="assignee-cell">
+            <div class="avatar avatar-sm" [style.background-color]="task.assignee?.avatarColor || '#0F63D1'">
+              {{ task.assignee?.shortName || 'NL' }}
+            </div>
+            <span class="assignee-name">{{ task.assignee?.fullName || 'Nguyễn Lan' }}</span>
+          </div>
+        </div>
+
+        <div class="col-date">
+          <span class="due-date-text">{{ formatDueDate(task.dueDate) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================== -->
+<!-- VIEW 2: BẢNG (TABLE DATA GRID) -->
+<!-- ======================================================== -->
+<div class="table-view-container" *ngIf="currentViewMode === 'TABLE' && tasks.length > 0">
+  <div class="enterprise-table-card card">
+    <table class="data-grid-table">
+      <thead>
+        <tr>
+          <th width="40" class="text-center">
+            <input type="checkbox" (change)="toggleSelectAll($event)">
+          </th>
+          <th width="110">MÃ VIỆC</th>
+          <th>TIÊU ĐỀ CÔNG VIỆC</th>
+          <th width="160">DỰ ÁN</th>
+          <th width="170">GIAI ĐOẠN</th>
+          <th width="140" class="text-center">TRẠNG THÁI</th>
+          <th width="120">ĐỘ ƯU TIÊN</th>
+          <th width="160">NGƯỜI THỰC HIỆN</th>
+          <th width="120">CHECKLIST</th>
+          <th width="110">HẠN CHÓT</th>
+          <th width="90" class="text-right">GIỜ LÀM</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let task of tasks" (click)="onSelectTask(task)">
+          <td class="text-center" (click)="$event.stopPropagation()">
+            <input type="checkbox" [checked]="task.isCompleted" (change)="onToggleComplete(task, $event)">
+          </td>
+          <td>
+            <span class="task-key-tag">{{ task.taskKey }}</span>
+          </td>
+          <td>
+            <div class="table-title-cell">
+              <span class="table-title-main" [class.completed]="task.isCompleted">{{ task.title }}</span>
+              <span class="table-title-sub">{{ task.description || 'Chưa có ghi chú' }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="project-pill">{{ task.project.name || 'Triển khai website doanh nghiệp' }}</span>
+          </td>
+          <td>
+            <span class="stage-label">{{ getStageName(task.stageId) }}</span>
+          </td>
+          <td class="text-center">
+            <span class="badge-status" [ngClass]="'status-' + task.status.toLowerCase()">
+              {{ getStatusText(task.status) }}
+            </span>
+          </td>
+          <td>
+            <span class="badge-priority" [ngClass]="task.priority">
+              {{ getPriorityText(task.priority) }}
+            </span>
+          </td>
+          <td>
+            <div class="assignee-cell">
+              <div class="avatar avatar-sm" [style.background-color]="task.assignee?.avatarColor || '#0F63D1'">
+                {{ task.assignee?.shortName || 'NL' }}
+              </div>
+              <span class="assignee-name">{{ task.assignee?.fullName || 'Nguyễn Lan' }}</span>
+            </div>
+          </td>
+          <td>
+            <div class="checklist-progress-cell">
+              <span class="checklist-text">{{ task.checklistSummary || '0/2 checklist' }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="due-date-text">{{ formatDueDate(task.dueDate) }}</span>
+          </td>
+          <td class="text-right">
+            <span class="hours-spent">{{ task.estimation.spentHours || 0 }}h</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="table-footer-bar">
+      <span>Tổng cộng: <strong>{{ tasks.length }}</strong> công việc</span>
+      <span class="footer-tip">💡 Nhấp vào từng dòng để mở form cập nhật chi tiết hoặc ghi nhận worklog</span>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================== -->
+<!-- VIEW 5: NGƯỜI DÙNG (GROUP BY USER) -->
+<!-- ======================================================== -->
+<div class="user-view-container" *ngIf="currentViewMode === 'USER' && tasks.length > 0">
+  <div class="user-block" *ngFor="let uGroup of getUserGroups()">
+    <div class="user-group-header">
+      <div class="user-info-chip">
+        <div class="avatar avatar-sm" [style.background-color]="uGroup.avatarColor">
+          {{ uGroup.shortName }}
+        </div>
+        <span class="user-group-name">{{ uGroup.userName }}</span>
+      </div>
+      <span class="group-count-badge">{{ uGroup.tasks.length }} công việc</span>
+    </div>
+
+    <div class="stage-task-row" *ngFor="let task of uGroup.tasks" (click)="onSelectTask(task)">
+      <div class="col-title">
+        <div class="task-checkbox" [class.checked]="task.isCompleted" (click)="onToggleComplete(task, $event)">
+          <svg *ngIf="task.isCompleted" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#0F63D1" stroke-width="3">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <div class="task-meta-cell">
+          <span class="task-text-title" [class.completed]="task.isCompleted">{{ task.title }}</span>
+          <span class="task-subtext">{{ task.taskKey }} · {{ getStageName(task.stageId) }}</span>
+        </div>
+      </div>
+      <div class="col-status">
+        <span class="badge-status" [ngClass]="'status-' + task.status.toLowerCase()">
+          {{ getStatusText(task.status) }}
+        </span>
+      </div>
+      <div class="col-priority">
+        <span class="badge-priority" [ngClass]="task.priority">
+          {{ getPriorityText(task.priority) }}
+        </span>
+      </div>
+      <div class="col-date">
+        <span class="due-date-text">{{ formatDueDate(task.dueDate) }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================== -->
+<!-- VIEW 6: TRẠNG THÁI (GROUP BY STATUS) -->
+<!-- ======================================================== -->
+<div class="status-view-container" *ngIf="currentViewMode === 'STATUS' && tasks.length > 0">
+  <div class="status-block" *ngFor="let sGroup of getStatusGroups()">
+    <div class="status-group-header">
+      <span class="badge-status" [ngClass]="'status-' + sGroup.status.toLowerCase()">{{ sGroup.label }}</span>
+      <span class="group-count-badge">{{ sGroup.tasks.length }} công việc</span>
+    </div>
+
+    <div class="stage-task-row" *ngFor="let task of sGroup.tasks" (click)="onSelectTask(task)">
+      <div class="col-title">
+        <div class="task-checkbox" [class.checked]="task.isCompleted" (click)="onToggleComplete(task, $event)">
+          <svg *ngIf="task.isCompleted" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#0F63D1" stroke-width="3">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <div class="task-meta-cell">
+          <span class="task-text-title" [class.completed]="task.isCompleted">{{ task.title }}</span>
+          <span class="task-subtext">{{ task.taskKey }} · {{ task.assignee?.fullName || 'Chưa phân công' }}</span>
+        </div>
+      </div>
+      <div class="col-priority">
+        <span class="badge-priority" [ngClass]="task.priority">
+          {{ getPriorityText(task.priority) }}
+        </span>
+      </div>
+      <div class="col-date">
+        <span class="due-date-text">{{ formatDueDate(task.dueDate) }}</span>
+      </div>
+    </div>
+  </div>
+</div>

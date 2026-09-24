@@ -1,0 +1,121 @@
+<div class="modal-backdrop" (click)="dismiss()">
+  <div class="modal-content card" (click)="$event.stopPropagation()">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <div class="header-left">
+        <span class="task-key-tag">{{ task.taskKey }}</span>
+        <span class="project-tag">{{ task.project.name || 'Dự án' }}</span>
+      </div>
+      <button class="close-btn" type="button" (click)="dismiss()" aria-label="Đóng modal">✕</button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <div class="main-column">
+        <!-- Title -->
+        <h2 class="task-title">{{ task.title }}</h2>
+
+        <!-- Description -->
+        <div class="section-block">
+          <label class="block-label">Mô tả công việc</label>
+          <div class="description-text">
+            {{ task.description || 'Chưa có mô tả chi tiết cho công việc này.' }}
+          </div>
+        </div>
+
+        <!-- Checklists -->
+        <div class="section-block">
+          <div class="checklist-header">
+            <label class="block-label">Danh sách công việc phụ (Checklist)</label>
+            <span class="checklist-count">{{ task.checklistSummary || '0/0' }}</span>
+          </div>
+          <div class="checklist-list">
+            <div class="checklist-item" *ngFor="let item of task.checklists">
+              <input type="checkbox" [checked]="item.isDone" (change)="toggleChecklist(item)">
+              <span [class.done]="item.isDone">{{ item.title }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dependencies -->
+        <div class="section-block" *ngIf="task.dependencies">
+          <label class="block-label">Phụ thuộc công việc (Dependencies)</label>
+          <div class="dependencies-box" *ngIf="task.dependencies.blockedBy?.length">
+            <span class="dep-badge blocked">Bị chặn bởi (Blocked by):</span>
+            <span class="dep-key" *ngFor="let dep of task.dependencies.blockedBy">
+              {{ dep.taskKey }} ({{ dep.type }})
+            </span>
+          </div>
+          <div class="dependencies-box" *ngIf="task.dependencies.blocking?.length">
+            <span class="dep-badge blocking">Đang chặn (Blocking):</span>
+            <span class="dep-key" *ngFor="let dep of task.dependencies.blocking">
+              {{ dep.taskKey }}
+            </span>
+          </div>
+          <div *ngIf="!task.dependencies.blockedBy?.length && !task.dependencies.blocking?.length" class="text-muted">
+            Không có mối quan hệ phụ thuộc.
+          </div>
+        </div>
+
+        <!-- Review info -->
+        <div class="section-block review-block" *ngIf="task.review?.isRequired">
+          <label class="block-label">Quy trình Phê duyệt (Review Gate)</label>
+          <div class="review-status-line">
+            <span>Trạng thái duyệt:</span>
+            <span class="badge-status" [ngClass]="task.review.reviewStatus">{{ task.review.reviewStatus }}</span>
+          </div>
+          <div class="review-feedback" *ngIf="task.review.feedback">
+            <strong>Ý kiến người duyệt:</strong> "{{ task.review.feedback }}"
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Column -->
+      <div class="sidebar-column">
+        <!-- Status & Priority -->
+        <div class="meta-field">
+          <label>Trạng thái</label>
+          <select [(ngModel)]="task.status" (change)="onStatusChange()" class="form-select">
+            <option value="TODO">Chưa bắt đầu (TODO)</option>
+            <option value="IN_PROGRESS">Đang thực hiện (IN_PROGRESS)</option>
+            <option value="IN_REVIEW">Chờ xét duyệt (IN_REVIEW)</option>
+            <option value="DONE">Đã hoàn thành (DONE)</option>
+            <option value="FAILED">Thất bại (FAILED)</option>
+          </select>
+        </div>
+
+        <div class="meta-field">
+          <label>Độ ưu tiên</label>
+          <span class="badge-priority" [ngClass]="task.priority">{{ task.priority }}</span>
+        </div>
+
+        <!-- Assignee -->
+        <div class="meta-field">
+          <label>Người thực hiện</label>
+          <div class="user-inline" *ngIf="task.assignee">
+            <div class="avatar avatar-sm">{{ task.assignee.shortName }}</div>
+            <span>{{ task.assignee.fullName }}</span>
+          </div>
+          <div class="text-muted" *ngIf="!task.assignee">Chưa phân công</div>
+        </div>
+
+        <!-- Time & Estimation -->
+        <div class="meta-field">
+          <label>Thời gian & Chấm giờ</label>
+          <div class="hours-box">
+            <div>Ước tính: <strong>{{ task.estimation.estimatedHours || 0 }}h</strong></div>
+            <div>Đã ghi nhận: <strong class="text-primary">{{ task.estimation.spentHours || 0 }}h</strong></div>
+          </div>
+        </div>
+
+        <button flxButton status="primary" class="btn-block" (click)="openQuickLog()">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          Chấm giờ công việc
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

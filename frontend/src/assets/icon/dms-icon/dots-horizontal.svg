@@ -1,0 +1,15 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none"
+     xmlns="http://www.w3.org/2000/svg">
+
+  <!-- background circle -->
+  <circle cx="8" cy="8" r="7"
+          fill="#F2F4F7"
+          stroke="#D0D5DD"
+          stroke-width="1"/>
+
+  <!-- dots -->
+  <circle cx="5.5" cy="8" r="1" fill="#667085"/>
+  <circle cx="8" cy="8" r="1" fill="#667085"/>
+  <circle cx="10.5" cy="8" r="1" fill="#667085"/>
+
+</svg>

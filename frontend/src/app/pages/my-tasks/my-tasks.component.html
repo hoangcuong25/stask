@@ -1,0 +1,98 @@
+<div class="my-tasks-page">
+  <!-- Breadcrumb -->
+  <div class="breadcrumb-bar">
+    <svg class="home-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+    <span class="crumb">sWork</span>
+    <span class="divider">/</span>
+    <span class="crumb">Công việc</span>
+    <span class="divider">/</span>
+    <span class="crumb active">Công việc của tôi</span>
+  </div>
+
+  <!-- 4 Tabs with Flx styling and badge counters -->
+  <div class="tabs-header">
+    <button class="tab-item" [class.active]="currentTab === 'ASSIGNED'" (click)="selectTab('ASSIGNED')">
+      <span>Tôi thực hiện</span>
+      <span class="tab-count" *ngIf="tabCounts.ASSIGNED > 0">{{ tabCounts.ASSIGNED }}</span>
+    </button>
+    <button class="tab-item" [class.active]="currentTab === 'COLLABORATING'" (click)="selectTab('COLLABORATING')">
+      <span>Tôi phối hợp</span>
+      <span class="tab-count" *ngIf="tabCounts.COLLABORATING > 0">{{ tabCounts.COLLABORATING }}</span>
+    </button>
+    <button class="tab-item" [class.active]="currentTab === 'CREATED'" (click)="selectTab('CREATED')">
+      <span>Tôi giao</span>
+      <span class="tab-count" *ngIf="tabCounts.CREATED > 0">{{ tabCounts.CREATED }}</span>
+    </button>
+    <button class="tab-item" [class.active]="currentTab === 'FOLLOWING'" (click)="selectTab('FOLLOWING')">
+      <span>Tôi theo dõi</span>
+      <span class="tab-count" *ngIf="tabCounts.FOLLOWING > 0">{{ tabCounts.FOLLOWING }}</span>
+    </button>
+  </div>
+
+  <!-- Subcomponent 1: Filter Bar -->
+  <app-task-filter-bar
+    [searchKeyword]="searchKeyword"
+    [selectedType]="selectedType"
+    [selectedStatus]="selectedStatus"
+    [selectedPriority]="selectedPriority"
+    [selectedAssignee]="selectedAssignee"
+    [currentViewMode]="currentViewMode"
+    [viewModeLabel]="getViewModeLabel()"
+    (searchChange)="onSearchChange($event)"
+    (typeChange)="onTypeChange($event)"
+    (statusChange)="onStatusChange($event)"
+    (priorityChange)="onPriorityChange($event)"
+    (assigneeChange)="onAssigneeChange($event)"
+    (viewModeChange)="onViewModeChange($event)">
+  </app-task-filter-bar>
+
+  <!-- View Content Area -->
+  <div class="tasks-content-area">
+    <!-- Subcomponent 2: Table Views (DEFAULT, TABLE, USER, STATUS) -->
+    <app-task-table-view
+      *ngIf="currentViewMode === 'DEFAULT' || currentViewMode === 'TABLE' || currentViewMode === 'USER' || currentViewMode === 'STATUS'"
+      [tasks]="filteredTasks"
+      [currentViewMode]="currentViewMode"
+      [stages]="stages"
+      (taskSelect)="openTaskModal($event)"
+      (taskToggleComplete)="onToggleTaskComplete($event)">
+    </app-task-table-view>
+
+    <!-- Subcomponent 3: Kanban View -->
+    <app-task-kanban-view
+      *ngIf="currentViewMode === 'KANBAN'"
+      [tasks]="filteredTasks"
+      (taskSelect)="openTaskModal($event)"
+      (taskStatusChange)="onKanbanStatusChange($event)">
+    </app-task-kanban-view>
+
+    <!-- Subcomponent 4: Calendar View -->
+    <app-task-calendar-view
+      *ngIf="currentViewMode === 'CALENDAR'"
+      [tasks]="filteredTasks"
+      [calendarYear]="calendarYear"
+      [calendarMonth]="calendarMonth"
+      (taskSelect)="openTaskModal($event)"
+      (monthChange)="onCalendarMonthChange($event)">
+    </app-task-calendar-view>
+
+    <!-- Subcomponent 5: Gantt View -->
+    <app-task-gantt-view
+      *ngIf="currentViewMode === 'GANTT'"
+      [tasks]="filteredTasks"
+      (taskSelect)="openTaskModal($event)">
+    </app-task-gantt-view>
+  </div>
+
+  <!-- Task Detail Modal -->
+  <app-task-modal
+    *ngIf="selectedTask"
+    [task]="selectedTask"
+    (close)="closeTaskModal()"
+    (closeEvent)="closeTaskModal()"
+    (taskUpdated)="onTaskUpdated($event)">
+  </app-task-modal>
+</div>

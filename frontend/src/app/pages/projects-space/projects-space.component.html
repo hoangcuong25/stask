@@ -1,0 +1,288 @@
+<div class="page-container">
+  <!-- Project Header Card -->
+  <div class="project-header card" *ngIf="currentProject">
+    <div class="header-main">
+      <div class="project-identity">
+        <span class="project-code-badge">{{ currentProject.code }}</span>
+        <div>
+          <h1 class="project-name">{{ currentProject.name }}</h1>
+          <div class="project-meta-line">
+            <span class="meta-tag">{{ currentProject.tag }}</span>
+            <span>Hạn chót: <strong>{{ currentProject.dueDate | date:'dd/MM/yyyy' }}</strong></span>
+            <span>Thành viên: <strong>{{ currentProject.members.length }} người</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress Widget -->
+      <div class="progress-widget">
+        <div class="progress-bar-container">
+          <div class="progress-fill" [style.width.%]="currentProject.stats.progressPercent || 0"></div>
+        </div>
+        <div class="progress-stats-line">
+          <span class="percent-val">{{ currentProject.stats.progressPercent || 0 }}% Hoàn thành</span>
+          <span class="counts-val">
+            {{ currentProject.stats.completedTasks || 0 }}/{{ currentProject.stats.totalTasks || 0 }} tasks
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sub-tabs Navigation -->
+    <div class="project-subtabs">
+      <button class="subtab-btn" [class.active]="activeSubTab === 'KANBAN'" (click)="activeSubTab = 'KANBAN'">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="18" rx="1"></rect>
+          <rect x="14" y="3" width="7" height="11" rx="1"></rect>
+        </svg>
+        Giai đoạn & Kanban
+      </button>
+
+      <button class="subtab-btn" [class.active]="activeSubTab === 'LIST'" (click)="activeSubTab = 'LIST'">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="8" y1="6" x2="21" y2="6"></line>
+          <line x1="8" y1="12" x2="21" y2="12"></line>
+          <line x1="8" y1="18" x2="21" y2="18"></line>
+          <line x1="3" y1="6" x2="3.01" y2="6"></line>
+          <line x1="3" y1="12" x2="3.01" y2="12"></line>
+          <line x1="3" y1="18" x2="3.01" y2="18"></line>
+        </svg>
+        Danh sách
+      </button>
+
+      <button class="subtab-btn" [class.active]="activeSubTab === 'DISCUSSIONS'" (click)="activeSubTab = 'DISCUSSIONS'">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        Thảo luận
+      </button>
+
+      <button class="subtab-btn" [class.active]="activeSubTab === 'DOCUMENTS'" (click)="activeSubTab = 'DOCUMENTS'">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+        </svg>
+        Tài liệu
+      </button>
+
+      <button class="subtab-btn" [class.active]="activeSubTab === 'GOALS'" (click)="activeSubTab = 'GOALS'">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <circle cx="12" cy="12" r="6"></circle>
+          <circle cx="12" cy="12" r="2"></circle>
+        </svg>
+        Mục tiêu (OKRs)
+      </button>
+
+      <button class="subtab-btn" [class.active]="activeSubTab === 'SETTINGS'" (click)="activeSubTab = 'SETTINGS'">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        Thiết lập
+      </button>
+    </div>
+  </div>
+
+  <!-- VIEW 1: KANBAN STAGES (Section 1.2: Gom nhóm giai đoạn) -->
+  <div class="kanban-board" *ngIf="activeSubTab === 'KANBAN'">
+    <div class="stage-column card" *ngFor="let stage of currentProject?.stages">
+      <div class="stage-header">
+        <div class="stage-title-wrap">
+          <span class="stage-pos">{{ stage.position }}</span>
+          <h3 class="stage-name">{{ stage.name }}</h3>
+        </div>
+        <span class="stage-badge">{{ getTasksForStage(stage.id).length }}</span>
+      </div>
+
+      <div class="stage-cards-container">
+        <div class="task-kanban-card card" *ngFor="let task of getTasksForStage(stage.id)" (click)="selectedTask = task">
+          <div class="card-top-row">
+            <span class="task-key">{{ task.taskKey }}</span>
+            <span class="badge-priority" [ngClass]="task.priority">{{ task.priority }}</span>
+          </div>
+          <div class="card-title">{{ task.title }}</div>
+          
+          <div class="card-bottom-row">
+            <div class="bottom-left">
+              <span class="badge-status" [ngClass]="task.status">{{ task.status }}</span>
+              <span class="ck-pill" *ngIf="task.checklistSummary">{{ task.checklistSummary }}</span>
+            </div>
+            <div class="avatar avatar-sm" *ngIf="task.assignee" title="{{ task.assignee.fullName }}">
+              {{ task.assignee.shortName }}
+            </div>
+          </div>
+        </div>
+
+        <button flxButton status="default" size="sm" class="add-task-stage-btn" (click)="quickCreateTaskInStage(stage.id)">
+          + Thêm công việc
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 2: LIST VIEW -->
+  <div class="list-view card" *ngIf="activeSubTab === 'LIST'">
+    <table class="tasks-table">
+      <thead>
+        <tr>
+          <th width="100">Mã</th>
+          <th>Tiêu đề</th>
+          <th width="180">Giai đoạn</th>
+          <th width="140">Người làm</th>
+          <th width="100">Độ ưu tiên</th>
+          <th width="140">Trạng thái</th>
+          <th width="100">Checklist</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let task of allProjectTasks" (click)="selectedTask = task" class="task-row">
+          <td><span class="task-key">{{ task.taskKey }}</span></td>
+          <td class="title-text">{{ task.title }}</td>
+          <td>{{ getStageName(task.stageId) }}</td>
+          <td>
+            <div class="user-cell" *ngIf="task.assignee">
+              <div class="avatar avatar-sm">{{ task.assignee.shortName }}</div>
+              <span>{{ task.assignee.fullName }}</span>
+            </div>
+          </td>
+          <td><span class="badge-priority" [ngClass]="task.priority">{{ task.priority }}</span></td>
+          <td><span class="badge-status" [ngClass]="task.status">{{ task.status }}</span></td>
+          <td>{{ task.checklistSummary || '--' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- VIEW 3: DISCUSSIONS -->
+  <div class="discussion-view card" *ngIf="activeSubTab === 'DISCUSSIONS'">
+    <div class="discussion-composer">
+      <textarea [(ngModel)]="newComment" placeholder="Nhập ý kiến thảo luận trong dự án..." rows="3"></textarea>
+      <div class="composer-actions">
+        <button flxButton status="default" size="sm">Đính kèm file</button>
+        <button flxButton status="primary" size="sm" (click)="sendComment()">Gửi thảo luận</button>
+      </div>
+    </div>
+    <div class="discussion-feed">
+      <div class="comment-item" *ngFor="let c of sampleComments">
+        <div class="avatar avatar-sm">{{ c.user }}</div>
+        <div class="comment-bubble">
+          <div class="comment-author">{{ c.name }} <span class="comment-time">{{ c.time }}</span></div>
+          <div class="comment-content">{{ c.text }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 4: DOCUMENTS -->
+  <div class="documents-view card" *ngIf="activeSubTab === 'DOCUMENTS'">
+    <div class="docs-header">
+      <h3>Tài liệu đính kèm dự án (project_documents)</h3>
+      <button flxButton status="primary" size="sm">+ Tải lên tài liệu</button>
+    </div>
+    <div class="docs-list">
+      <div class="doc-row" *ngFor="let doc of sampleDocs">
+        <span class="doc-icon">📄</span>
+        <div class="doc-meta">
+          <span class="doc-name">{{ doc.name }}</span>
+          <span class="doc-size">{{ doc.size }} • Tải lên bởi {{ doc.by }}</span>
+        </div>
+        <button flxButton status="default" size="sm">Tải về</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 5: GOALS (OKRs) -->
+  <div class="goals-view card" *ngIf="activeSubTab === 'GOALS'">
+    <div class="goals-header">
+      <h3>Mục tiêu & Chỉ số OKRs dự án (project_goals)</h3>
+      <button flxButton status="primary" size="sm">+ Thêm mục tiêu</button>
+    </div>
+    <div class="goals-list">
+      <div class="goal-item" *ngFor="let g of sampleGoals">
+        <div class="goal-info">
+          <div class="goal-title">{{ g.title }}</div>
+          <div class="goal-date">Hạn mục tiêu: {{ g.targetDate }}</div>
+        </div>
+        <span class="badge-status DONE">{{ g.status }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 6: PROJECT SETTINGS (Section 3.3 in PDF) -->
+  <div class="settings-view card" *ngIf="activeSubTab === 'SETTINGS' && currentProject">
+    <h2 class="settings-title">Cấu hình thiết lập dự án (Project Settings)</h2>
+    
+    <!-- Basic Settings -->
+    <div class="settings-section">
+      <h3>1. Thiết lập cơ bản (basic_settings)</h3>
+      <div class="setting-grid">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="currentProject.settings.basicSettings.managerCanAddMembers">
+          Quản lý được phép thêm thành viên (manager_can_add_members)
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="currentProject.settings.basicSettings.enableCustomFields">
+          Bật trường tùy chỉnh (enable_custom_fields)
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="currentProject.settings.basicSettings.sendEmailNotifications">
+          Gửi email thông báo (send_email_notifications)
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="currentProject.settings.basicSettings.enableGoals">
+          Quản lý mục tiêu OKRs (enable_goals)
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="currentProject.settings.basicSettings.allowCloneWorkspace">
+          Cho phép nhân bản không gian (allow_clone_workspace)
+        </label>
+      </div>
+    </div>
+
+    <!-- System Settings -->
+    <div class="settings-section">
+      <h3>2. Thiết lập hệ thống (system_settings)</h3>
+      <div class="setting-grid">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="currentProject.settings.systemSettings.pinToSidebar">
+          Ghim lên thanh điều hướng bên (pin_to_sidebar)
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="currentProject.settings.systemSettings.ownerCanViewAll">
+          Chủ sở hữu xem toàn bộ (owner_can_view_all)
+        </label>
+      </div>
+    </div>
+
+    <!-- Task Advanced Settings -->
+    <div class="settings-section">
+      <h3>3. Thiết lập công việc nâng cao (task_advanced_settings)</h3>
+      <div class="setting-grid">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="currentProject.settings.taskAdvancedSettings.enableHourlyDeadline">
+          Bật thời hạn theo giờ (enable_hourly_deadline)
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="currentProject.settings.taskAdvancedSettings.requireReviewBeforeComplete">
+          Bắt buộc duyệt trước khi hoàn tất (require_review_before_complete)
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="currentProject.settings.taskAdvancedSettings.enableTaskDependencies">
+          Bật ràng buộc phụ thuộc công việc (enable_task_dependencies)
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="currentProject.settings.taskAdvancedSettings.enableEstimatedHours">
+          Bật ước tính giờ làm (enable_estimated_hours)
+        </label>
+      </div>
+    </div>
+
+    <div class="save-actions">
+      <button flxButton status="primary" (click)="saveSettings()">Lưu cấu hình dự án</button>
+    </div>
+  </div>
+
+  <!-- Task Modal -->
+  <app-task-modal *ngIf="selectedTask" [task]="selectedTask" (close)="closeTaskModal()" (closeEvent)="closeTaskModal()" (taskUpdated)="onTaskUpdated($event)"></app-task-modal>
+</div>

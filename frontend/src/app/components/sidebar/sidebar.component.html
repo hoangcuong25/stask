@@ -1,0 +1,113 @@
+<aside class="app-sidebar">
+  <!-- Search input in sidebar -->
+  <div class="sidebar-search">
+    <svg class="search-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"></circle>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    </svg>
+    <input type="text" placeholder="Tìm công việc, dự án...">
+  </div>
+
+  <!-- Navigation Menu -->
+  <nav class="sidebar-nav">
+    <a routerLink="/dashboard" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <svg class="nav-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+        <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+        <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+        <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+        <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+      </svg>
+      <span>Dashboard</span>
+    </a>
+
+    <!-- Section: Công việc -->
+    <div class="nav-group">
+      <div class="group-header">
+        <div class="group-title">
+          <svg class="group-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+            <path d="m9 12 2 2 4-4"></path>
+          </svg>
+          <span>Công việc</span>
+        </div>
+        <svg class="chevron-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+
+      <div class="group-items">
+        <a routerLink="/my-tasks" routerLinkActive="active" class="sub-nav-item">
+          <span>Công việc của tôi</span>
+        </a>
+        <a routerLink="/personal-plan" routerLinkActive="active" class="sub-nav-item">
+          <span>Kế hoạch cá nhân</span>
+        </a>
+        <a routerLink="/calendar" routerLinkActive="active" class="sub-nav-item">
+          <span>Lịch cá nhân</span>
+        </a>
+        <a routerLink="/recurring-tasks" class="sub-nav-item">
+          <span>Công việc lặp lại</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Section: Không gian làm việc -->
+    <div class="nav-group">
+      <div class="group-header">
+        <div class="group-title">
+          <svg class="group-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2 2 7l10 5 10-5-10-5Z"></path>
+            <path d="m2 17 10 5 10-5"></path>
+            <path d="m2 12 10 5 10-5"></path>
+          </svg>
+          <span>Không gian làm việc</span>
+        </div>
+        <svg class="chevron-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+
+      <div class="group-items">
+        <a routerLink="/projects" routerLinkActive="active" class="sub-nav-item bullet-item">
+          <span class="bullet">•</span>
+          <span>Dự án</span>
+        </a>
+        <a routerLink="/departments" class="sub-nav-item bullet-item">
+          <span class="bullet">•</span>
+          <span>Phòng ban</span>
+        </a>
+        <a routerLink="/worklogs" routerLinkActive="active" class="sub-nav-item bullet-item">
+          <span class="bullet">•</span>
+          <span>Worklog</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Section: Báo cáo -->
+    <a routerLink="/reports" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="20" x2="18" y2="10"></line>
+        <line x1="12" y1="20" x2="12" y2="4"></line>
+        <line x1="6" y1="20" x2="6" y2="14"></line>
+      </svg>
+      <span>Báo cáo</span>
+    </a>
+  </nav>
+
+  <!-- Sidebar Footer -->
+  <div class="sidebar-bottom">
+    <button flxButton status="default" class="btn-matrix">
+      Ma trận phân quyền
+    </button>
+
+    <div class="user-profile-card" *ngIf="currentUser">
+      <div class="avatar-dk" [style.background-color]="currentUser.avatarColor || '#0F4C81'">
+        {{ currentUser.shortName || 'NL' }}
+      </div>
+      <div class="user-meta">
+        <div class="user-full-name">{{ currentUser.fullName || 'Nguyễn Lan' }}</div>
+        <div class="user-role-label">{{ currentUser.role === 'SYSTEM_OWNER' ? 'System owner' : (currentUser.role === 'ADMIN' ? 'Admin' : 'Thành viên') }}</div>
+      </div>
+    </div>
+  </div>
+</aside>

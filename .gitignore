@@ -1,0 +1,33 @@
+# Git Ignore for sWork Project
+
+# Backend (Maven & Java)
+target/
+**/target/
+*.class
+**/*.class
+*.log
+**/*.log
+.idea/
+*.iml
+.vscode/
+
+# Frontend (Node & Angular)
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.angular/
+**/.angular/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# Docker & Database
+mongo_data/
+**/mongo_data/
+docker/data/
+
+# OS Files
+.DS_Store
+Thumbs.db
+

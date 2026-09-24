@@ -1,0 +1,101 @@
+<div class="calendar-page">
+  <!-- Breadcrumb -->
+  <div class="breadcrumb-bar">
+    <svg class="home-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+    <span class="crumb">sWork</span>
+    <span class="divider">/</span>
+    <span class="crumb active">Lịch & Kế hoạch cá nhân</span>
+  </div>
+
+  <!-- Header -->
+  <div class="cal-page-header">
+    <div>
+      <h1 class="page-title">Lịch cá nhân & Sự kiện</h1>
+      <p class="page-desc">Theo dõi công việc đến hạn, lịch họp và các mốc thời gian quan trọng</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary">+ Tạo sự kiện mới</button>
+    </div>
+  </div>
+
+  <div class="calendar-layout">
+    <!-- Month Grid View -->
+    <div class="main-calendar-card">
+      <div class="cal-controls">
+        <div class="nav-btns">
+          <button class="cal-btn-nav" (click)="prevMonth()">◀</button>
+          <button class="cal-btn-today" (click)="goToToday()">Hôm nay</button>
+          <button class="cal-btn-nav" (click)="nextMonth()">▶</button>
+          <span class="cal-month-title">{{ getMonthName() }}</span>
+        </div>
+        <div class="cal-legend">
+          <span class="leg-item"><span class="dot-blue"></span> Hôm nay</span>
+          <span class="leg-item"><span class="dot-orange"></span> Công việc</span>
+          <span class="leg-item"><span class="dot-purple"></span> Cuộc họp</span>
+        </div>
+      </div>
+
+      <!-- Weekday Headers -->
+      <div class="cal-week-row">
+        <div class="week-col">Thứ 2</div>
+        <div class="week-col">Thứ 3</div>
+        <div class="week-col">Thứ 4</div>
+        <div class="week-col">Thứ 5</div>
+        <div class="week-col">Thứ 6</div>
+        <div class="week-col weekend">Thứ 7</div>
+        <div class="week-col weekend">Chủ nhật</div>
+      </div>
+
+      <!-- Days Grid -->
+      <div class="cal-days-grid">
+        <div class="day-slot"
+             *ngFor="let d of calendarDays"
+             [class.other-month]="!d.isCurrentMonth"
+             [class.today]="d.isToday">
+          <div class="day-head">
+            <span class="num" [class.today-badge]="d.isToday">{{ d.dayNumber }}</span>
+          </div>
+
+          <div class="day-items">
+            <!-- Events -->
+            <div class="cal-event-chip" *ngFor="let ev of d.events">
+              <span class="ev-time">{{ ev.time }}</span>
+              <span class="ev-title">{{ ev.title }}</span>
+            </div>
+
+            <!-- Tasks -->
+            <div class="cal-task-chip" *ngFor="let t of d.tasks">
+              <span class="t-key">{{ t.taskKey }}</span>
+              <span class="t-title">{{ t.title }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Side Plans Panel -->
+    <div class="side-plans-panel">
+      <div class="side-card">
+        <h3 class="side-title">Kế hoạch tuần & tháng</h3>
+        <div class="plan-item" *ngFor="let p of plans">
+          <span class="plan-tag">{{ p.period }}</span>
+          <h4 class="plan-heading">{{ p.title }}</h4>
+          <p class="plan-sub">{{ p.notes }}</p>
+        </div>
+      </div>
+
+      <div class="side-card">
+        <h3 class="side-title">Sự kiện sắp tới</h3>
+        <div class="event-item" *ngFor="let ev of events">
+          <span class="ev-badge">{{ ev.type }}</span>
+          <h4 class="ev-heading">{{ ev.title }}</h4>
+          <span class="ev-loc">🕒 {{ ev.time }}</span>
+          <span class="ev-loc">📍 {{ ev.location }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

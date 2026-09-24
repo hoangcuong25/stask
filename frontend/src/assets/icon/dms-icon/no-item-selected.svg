@@ -1,0 +1,24 @@
+<svg
+  width="180"
+  height="180"
+  viewBox="0 0 180 180"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- Green dot -->
+  <circle cx="40" cy="35" r="8" fill="#22C55E" />
+
+  <!-- Document -->
+  <rect x="65" y="30" width="70" height="90" rx="6" fill="#E5F0FF" stroke="#3B82F6" stroke-width="2" />
+  <path d="M115 30V48C115 51.3137 117.686 54 121 54H135" fill="#DBEAFE"/>
+  <path d="M115 30L135 50" stroke="#3B82F6" stroke-width="2"/>
+
+  <!-- Document lines -->
+  <line x1="75" y1="60" x2="120" y2="60" stroke="#94A3B8" stroke-width="2"/>
+  <line x1="75" y1="75" x2="120" y2="75" stroke="#94A3B8" stroke-width="2"/>
+  <line x1="75" y1="90" x2="110" y2="90" stroke="#94A3B8" stroke-width="2"/>
+
+  <!-- Magnifier -->
+  <circle cx="95" cy="95" r="22" stroke="#FBBF24" stroke-width="6" fill="none"/>
+  <line x1="110" y1="110" x2="135" y2="135" stroke="#FBBF24" stroke-width="6" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,64 @@
+<div class="calendar-view-container">
+  <div class="calendar-card card">
+    <!-- Calendar Navigation Header -->
+    <div class="calendar-nav-bar">
+      <div class="calendar-nav-left">
+        <button flxButton status="default" size="sm" class="btn-cal-today" (click)="goToToday()">
+          Hôm nay
+        </button>
+        <div class="cal-nav-buttons">
+          <button flxButton status="default" size="sm" (click)="prevMonth()" title="Tháng trước">
+            ◀
+          </button>
+          <button flxButton status="default" size="sm" (click)="nextMonth()" title="Tháng sau">
+            ▶
+          </button>
+        </div>
+        <h2 class="cal-current-label">{{ getCalendarMonthName() }}</h2>
+      </div>
+
+      <div class="cal-legend">
+        <span class="legend-item"><span class="dot done"></span> Đã hoàn thành</span>
+        <span class="legend-item"><span class="dot in_progress"></span> Đang làm</span>
+        <span class="legend-item"><span class="dot todo"></span> Cần làm</span>
+      </div>
+    </div>
+
+    <!-- Calendar 7 Days Grid Header -->
+    <div class="calendar-grid-header">
+      <div class="day-col-header">T2 (Hai)</div>
+      <div class="day-col-header">T3 (Ba)</div>
+      <div class="day-col-header">T4 (Tư)</div>
+      <div class="day-col-header">T5 (Năm)</div>
+      <div class="day-col-header">T6 (Sáu)</div>
+      <div class="day-col-header weekend">T7 (Bảy)</div>
+      <div class="day-col-header weekend">CN (Chủ nhật)</div>
+    </div>
+
+    <!-- Calendar Month Days -->
+    <div class="calendar-month-grid">
+      <div
+        class="cal-day-cell"
+        *ngFor="let day of calendarDays"
+        [class.other-month]="!day.isCurrentMonth"
+        [class.today]="day.isToday">
+        
+        <div class="cell-top-bar">
+          <span class="day-num" [class.today-badge]="day.isToday">{{ day.dayNumber }}</span>
+          <span class="day-task-count" *ngIf="day.tasks.length > 0">{{ day.tasks.length }} việc</span>
+        </div>
+
+        <div class="day-tasks-scroller">
+          <div
+            class="cal-task-pill"
+            *ngFor="let task of day.tasks"
+            [ngClass]="'status-' + task.status.toLowerCase()"
+            (click)="onSelect(task)">
+            <span class="pill-dot"></span>
+            <span class="pill-title">{{ task.title }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
