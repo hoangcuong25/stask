@@ -1,0 +1,10 @@
+<div class="swork-layout" [class.swork-embedded]="isEmbeddedInRoot">
+  <app-header *ngIf="!isEmbeddedInRoot"></app-header>
+  <div class="swork-body" [class.swork-body-embedded]="isEmbeddedInRoot">
+    <app-sidebar *ngIf="!isEmbeddedInRoot"></app-sidebar>
+    <main class="swork-content-area" [class.full-width]="isEmbeddedInRoot">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+  <app-create-task-modal></app-create-task-modal>
+</div>

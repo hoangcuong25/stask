@@ -13,5 +13,21 @@ export const routes: Routes = [
   { path: 'worklogs', component: WorklogsComponent },
   { path: 'calendar', component: CalendarComponent },
   { path: 'settings', component: ProjectsSpaceComponent },
+
+  // Khi định tuyến từ front-end root (/swork/...)
+  {
+    path: 'swork',
+    children: [
+      { path: '', redirectTo: 'my-tasks', pathMatch: 'full' },
+      { path: 'my-tasks', component: MyTasksComponent },
+      { path: 'personal-plan', component: PersonalPlanComponent },
+      { path: 'projects', component: ProjectsSpaceComponent },
+      { path: 'worklogs', component: WorklogsComponent },
+      { path: 'calendar', component: CalendarComponent },
+      { path: 'settings', component: ProjectsSpaceComponent },
+    ]
+  },
+
   { path: '**', redirectTo: 'my-tasks' }
 ];
+

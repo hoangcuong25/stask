@@ -21,6 +21,7 @@ dist/
 frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
+frontend/front-end/
 
 # Docker & Database
 mongo_data/

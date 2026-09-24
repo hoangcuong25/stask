@@ -1,9 +1,9 @@
 {
-  "name": "swork-frontend",
+  "name": "stasks",
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --port 4200 --host 0.0.0.0",
+    "start": "ng serve --port 4250 --host 0.0.0.0",
     "build": "ng build",
     "watch": "ng build --watch --configuration development"
   },
@@ -18,12 +18,15 @@
     "@angular/platform-browser": "^17.3.0",
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
-    "@fpt-is/flx-ui": "file:../../fis/frontend/front-end/dist/npm/flx-ui",
-    "@fpt-is/sdk-common": "file:../../fis/frontend/front-end/dist/npm/sdk-common",
+    "@fpt-is/flx-ui": "file:../front-end/dist/npm/flx-ui",
+    "@fpt-is/khaos-service": "file:../front-end/dist/npm/service/khaos-service",
+    "@fpt-is/sdk-common": "file:../front-end/dist/npm/sdk-common",
     "@types/lodash": "^4.17.25",
     "bootstrap": "^5.3.8",
     "lodash": "^4.18.1",
     "rxjs": "~7.8.0",
+    "single-spa": "^5.9.5",
+    "single-spa-angular": "^9.2.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
   },

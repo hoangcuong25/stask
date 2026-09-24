@@ -12,6 +12,7 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
+    "preserveSymlinks": true,
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
@@ -20,9 +21,7 @@
       "ES2022",
       "dom"
     ],
-    "paths": {
-      "@fpt-is/flx-ui/button": ["./src/app/flx-ui/button/index.ts", "./src/app/flx-ui/button"]
-    }
+    "paths": {}
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

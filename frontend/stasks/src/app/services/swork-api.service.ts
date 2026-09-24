@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { SworkService } from '@fpt-is/khaos-service';
 import {
   ApiResponse,
   MyTaskTab,
@@ -61,47 +62,59 @@ export class SworkApiService {
   }
 
   getUsers(): Observable<User[]> {
-    return this.http.get<ApiResponse<User[]>>(`${this.baseUrl}/users`).pipe(
-      map(res => {
-        const users = res.data || [];
+    return SworkService.getUsers().pipe(
+      map(users => {
+        const list = (users as unknown as User[]) || [];
         const current = this.getCurrentUser();
-        const found = users.find(u => u.id === current.id || u.email === current.email);
+        const found = list.find(u => u.id === current.id || u.email === current.email);
         if (found && found.id !== current.id) {
           this.setCurrentUser(found);
-        } else if (!found && users.length > 0) {
-          this.setCurrentUser(users[0]);
+        } else if (!found && list.length > 0) {
+          this.setCurrentUser(list[0]);
         }
-        return users;
+        return list;
       }),
-      catchError(() => of(this.getMockUsers()))
+      catchError(() => this.http.get<ApiResponse<User[]>>(`${this.baseUrl}/users`).pipe(
+        map(res => res.data || []),
+        catchError(() => of(this.getMockUsers()))
+      ))
     );
   }
 
   getProjects(): Observable<Project[]> {
-    return this.http.get<ApiResponse<Project[]>>(`${this.baseUrl}/projects`).pipe(
-      map(res => res.data),
-      catchError(() => of(this.getMockProjects()))
+    return SworkService.getProjects().pipe(
+      map(projects => (projects as unknown as Project[])),
+      catchError(() => this.http.get<ApiResponse<Project[]>>(`${this.baseUrl}/projects`).pipe(
+        map(res => res.data),
+        catchError(() => of(this.getMockProjects()))
+      ))
     );
   }
 
   getProjectById(id: string): Observable<Project> {
-    return this.http.get<ApiResponse<Project>>(`${this.baseUrl}/projects/${id}`).pipe(
-      map(res => res.data),
-      catchError(() => {
-        const found = this.getMockProjects().find(p => p.id === id);
-        return of(found || this.getMockProjects()[0]);
-      })
+    return SworkService.getProjectById(id).pipe(
+      map(p => (p as unknown as Project)),
+      catchError(() => this.http.get<ApiResponse<Project>>(`${this.baseUrl}/projects/${id}`).pipe(
+        map(res => res.data),
+        catchError(() => {
+          const found = this.getMockProjects().find(p => p.id === id);
+          return of(found || this.getMockProjects()[0]);
+        })
+      ))
     );
   }
 
   updateProjectSettings(id: string, settings: any): Observable<Project> {
-    return this.http.put<ApiResponse<Project>>(`${this.baseUrl}/projects/${id}/settings`, settings).pipe(
-      map(res => res.data),
-      catchError(() => {
-        const p = this.getMockProjects()[0];
-        p.settings = settings;
-        return of(p);
-      })
+    return SworkService.updateProjectSettings(id, settings).pipe(
+      map(p => (p as unknown as Project)),
+      catchError(() => this.http.put<ApiResponse<Project>>(`${this.baseUrl}/projects/${id}/settings`, settings).pipe(
+        map(res => res.data),
+        catchError(() => {
+          const p = this.getMockProjects()[0];
+          p.settings = settings;
+          return of(p);
+        })
+      ))
     );
   }
 
@@ -116,99 +129,119 @@ export class SworkApiService {
     page?: number;
     size?: number;
   }): Observable<PageResponse<Task>> {
-    let params = new HttpParams();
-    if (filter.tab) params = params.set('tab', filter.tab);
-    if (filter.userId) params = params.set('userId', filter.userId);
-    if (filter.projectId) params = params.set('projectId', filter.projectId);
-    if (filter.stageId) params = params.set('stageId', filter.stageId);
-    if (filter.status) params = params.set('status', filter.status);
-    if (filter.priority) params = params.set('priority', filter.priority);
-    if (filter.search) params = params.set('search', filter.search);
-    if (filter.page !== undefined) params = params.set('page', filter.page);
-    if (filter.size !== undefined) params = params.set('size', filter.size);
+    return SworkService.getTasks(filter as any).pipe(
+      map(res => (res as unknown as PageResponse<Task>)),
+      catchError(() => {
+        let params = new HttpParams();
+        if (filter.tab) params = params.set('tab', filter.tab);
+        if (filter.userId) params = params.set('userId', filter.userId);
+        if (filter.projectId) params = params.set('projectId', filter.projectId);
+        if (filter.stageId) params = params.set('stageId', filter.stageId);
+        if (filter.status) params = params.set('status', filter.status);
+        if (filter.priority) params = params.set('priority', filter.priority);
+        if (filter.search) params = params.set('search', filter.search);
+        if (filter.page !== undefined) params = params.set('page', filter.page);
+        if (filter.size !== undefined) params = params.set('size', filter.size);
 
-    return this.http.get<ApiResponse<PageResponse<Task>>>(`${this.baseUrl}/tasks`, { params }).pipe(
-      map(res => res.data),
-      catchError(() => of(this.getFilteredMockTasks(filter)))
+        return this.http.get<ApiResponse<PageResponse<Task>>>(`${this.baseUrl}/tasks`, { params }).pipe(
+          map(res => res.data),
+          catchError(() => of(this.getFilteredMockTasks(filter)))
+        );
+      })
     );
   }
 
   updateTaskStatus(id: string, status: TaskStatus): Observable<Task> {
-    return this.http.patch<ApiResponse<Task>>(`${this.baseUrl}/tasks/${id}/status?status=${status}`, {}).pipe(
-      map(res => res.data),
-      catchError(() => {
-        const task = this.getMockTasks().find(t => t.id === id);
-        if (task) {
-          task.status = status;
-          task.isCompleted = status === 'DONE';
-        }
-        return of(task || this.getMockTasks()[0]);
-      })
+    return SworkService.updateTaskStatus(id, status).pipe(
+      map(t => (t as unknown as Task)),
+      catchError(() => this.http.patch<ApiResponse<Task>>(`${this.baseUrl}/tasks/${id}/status?status=${status}`, {}).pipe(
+        map(res => res.data),
+        catchError(() => {
+          const task = this.getMockTasks().find(t => t.id === id);
+          if (task) {
+            task.status = status;
+            task.isCompleted = status === 'DONE';
+          }
+          return of(task || this.getMockTasks()[0]);
+        })
+      ))
     );
   }
 
   updateTask(id: string, taskData: any): Observable<Task> {
-    return this.http.put<ApiResponse<Task>>(`${this.baseUrl}/tasks/${id}`, taskData).pipe(
-      map(res => res.data),
-      catchError(() => {
-        const t = this.getMockTasks().find(x => x.id === id);
-        if (t) {
-          Object.assign(t, taskData);
-        }
-        return of(t || this.getMockTasks()[0]);
-      })
+    return SworkService.updateTask(id, taskData).pipe(
+      map(t => (t as unknown as Task)),
+      catchError(() => this.http.put<ApiResponse<Task>>(`${this.baseUrl}/tasks/${id}`, taskData).pipe(
+        map(res => res.data),
+        catchError(() => {
+          const t = this.getMockTasks().find(x => x.id === id);
+          if (t) Object.assign(t, taskData);
+          return of(t || this.getMockTasks()[0]);
+        })
+      ))
     );
   }
 
   toggleChecklist(taskId: string, checkItemId: string, isDone: boolean): Observable<Task> {
-    return this.http.patch<ApiResponse<Task>>(`${this.baseUrl}/tasks/${taskId}/checklists/${checkItemId}?isDone=${isDone}`, {}).pipe(
-      map(res => res.data),
-      catchError(() => {
-        const task = this.getMockTasks().find(t => t.id === taskId);
-        if (task && task.checklists) {
-          const item = task.checklists.find(c => c.id === checkItemId);
-          if (item) item.isDone = isDone;
-          const done = task.checklists.filter(c => c.isDone).length;
-          task.checklistSummary = `${done}/${task.checklists.length} checklist`;
-        }
-        return of(task || this.getMockTasks()[0]);
-      })
+    return SworkService.toggleChecklist(taskId, checkItemId, isDone).pipe(
+      map(t => (t as unknown as Task)),
+      catchError(() => this.http.patch<ApiResponse<Task>>(`${this.baseUrl}/tasks/${taskId}/checklists/${checkItemId}?isDone=${isDone}`, {}).pipe(
+        map(res => res.data),
+        catchError(() => {
+          const task = this.getMockTasks().find(t => t.id === taskId);
+          if (task && task.checklists) {
+            const item = task.checklists.find(c => c.id === checkItemId);
+            if (item) item.isDone = isDone;
+            const done = task.checklists.filter(c => c.isDone).length;
+            task.checklistSummary = `${done}/${task.checklists.length} checklist`;
+          }
+          return of(task || this.getMockTasks()[0]);
+        })
+      ))
     );
   }
 
   createTask(taskData: any): Observable<Task> {
-    return this.http.post<ApiResponse<Task>>(`${this.baseUrl}/tasks`, taskData).pipe(
-      map(res => res.data),
-      catchError(() => {
-        const newTask: Task = {
-          id: 'task-' + Date.now(),
-          taskKey: 'WEB-' + (this.getMockTasks().length + 101),
-          title: taskData.title,
-          description: taskData.description,
-          project: { id: 'proj-01', name: 'Triển khai website doanh nghiệp', code: 'WEB' },
-          stageId: taskData.stageId || 'stage-1',
-          status: taskData.status || 'TODO',
-          priority: taskData.priority || 'MEDIUM',
-          isCompleted: false,
-          creatorId: this.currentUserId,
-          collaboratorIds: [],
-          followerIds: [],
-          checklists: [],
-          estimation: { estimatedHours: taskData.estimatedHours || 0, spentHours: 0 },
-          dependencies: { blockedBy: [], blocking: [] },
-          review: { isRequired: false, reviewStatus: 'PENDING' }
-        };
-        this.getMockTasks().push(newTask);
-        return of(newTask);
-      })
+    return SworkService.createTask(taskData).pipe(
+      map(t => (t as unknown as Task)),
+      catchError(() => this.http.post<ApiResponse<Task>>(`${this.baseUrl}/tasks`, taskData).pipe(
+        map(res => res.data),
+        catchError(() => {
+          const newTask: Task = {
+            id: 'task-' + Date.now(),
+            taskKey: 'WEB-' + (this.getMockTasks().length + 101),
+            title: taskData.title,
+            description: taskData.description,
+            project: { id: 'proj-01', name: 'Triển khai website doanh nghiệp', code: 'WEB' },
+            stageId: taskData.stageId || 'stage-1',
+            status: taskData.status || 'TODO',
+            priority: taskData.priority || 'MEDIUM',
+            isCompleted: false,
+            creatorId: this.currentUserId,
+            collaboratorIds: [],
+            followerIds: [],
+            checklists: [],
+            estimation: { estimatedHours: taskData.estimatedHours || 0, spentHours: 0 },
+            dependencies: { blockedBy: [], blocking: [] },
+            review: { isRequired: false, reviewStatus: 'PENDING' }
+          };
+          this.getMockTasks().push(newTask);
+          return of(newTask);
+        })
+      ))
     );
   }
 
   getWorklogs(projectId?: string): Observable<Worklog[]> {
-    const url = projectId ? `${this.baseUrl}/worklogs/project/${projectId}` : `${this.baseUrl}/worklogs/user/${this.currentUserId}`;
-    return this.http.get<ApiResponse<Worklog[]>>(url).pipe(
-      map(res => res.data),
-      catchError(() => of(this.getMockWorklogs()))
+    return SworkService.getWorklogs(projectId, this.currentUserId).pipe(
+      map(w => (w as unknown as Worklog[])),
+      catchError(() => {
+        const url = projectId ? `${this.baseUrl}/worklogs/project/${projectId}` : `${this.baseUrl}/worklogs/user/${this.currentUserId}`;
+        return this.http.get<ApiResponse<Worklog[]>>(url).pipe(
+          map(res => res.data),
+          catchError(() => of(this.getMockWorklogs()))
+        );
+      })
     );
   }
 
@@ -217,19 +250,22 @@ export class SworkApiService {
       ...req,
       userId: this.currentUserId
     };
-    return this.http.post<ApiResponse<Worklog>>(`${this.baseUrl}/worklogs`, payload).pipe(
-      map(res => res.data),
-      catchError(() => {
-        const wl: Worklog = {
-          id: 'wl-' + Date.now(),
-          taskId: req.taskId,
-          userId: this.currentUserId,
-          durationMinutes: req.durationMinutes,
-          workDate: new Date().toISOString(),
-          note: req.note
-        };
-        return of(wl);
-      })
+    return SworkService.logTime(payload).pipe(
+      map(w => (w as unknown as Worklog)),
+      catchError(() => this.http.post<ApiResponse<Worklog>>(`${this.baseUrl}/worklogs`, payload).pipe(
+        map(res => res.data),
+        catchError(() => {
+          const wl: Worklog = {
+            id: 'wl-' + Date.now(),
+            taskId: req.taskId,
+            userId: this.currentUserId,
+            durationMinutes: req.durationMinutes,
+            workDate: new Date().toISOString(),
+            note: req.note
+          };
+          return of(wl);
+        })
+      ))
     );
   }
 

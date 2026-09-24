@@ -89,12 +89,19 @@ mvn spring-boot:run
 - Swagger UI tài liệu API tương tác: **[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)**
 - *Lưu ý: `DataSeeder.java` sẽ tự động nạp sẵn dữ liệu mẫu thực tế (Người dùng Nguyễn Lan, Dự án WEB, các tasks WEB-101 đến WEB-108, checklists, worklogs).*
 
-### Bước 3: Chạy Frontend Angular
+### Bước 3: Cấu trúc & Khởi chạy Frontend
+Thư mục `frontend/` được chuẩn hóa theo đúng mô hình kiến trúc chuẩn của FIS:
+- **`frontend/front-end`**: Front-end Root Portal (Single-SPA port 9000, cung cấp `flx-ui`, `khaos-service`, `sdk-common` tại `dist/npm/`).
+- **`frontend/stasks`**: Micro-frontend sWork Tasks độc lập.
+  - Sử dụng các package dùng chung qua đường dẫn chuẩn: `file:../front-end/dist/npm/...`.
+  - Khi cần bàn giao hoặc tích hợp vào hệ thống FIS thực tế, chỉ cần chuyển thư mục `stasks` vào `fis/frontend/stasks` là hoạt động ngay lập tức mà không cần sửa code.
+
 ```bash
-cd frontend
+cd frontend/stasks
 npm start
 ```
-- Ứng dụng giao diện web mở tại: **[http://localhost:4200](http://localhost:4200)**
+- Module sWork Tasks khởi chạy tại: **[http://localhost:4250](http://localhost:4250)**.
+- Khi FE Root hoạt động, cổng tổng **[http://localhost:9000/swork](http://localhost:9000/swork)** sẽ định tuyến tự động vào module này.
 
 ---
 
