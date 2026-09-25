@@ -1,0 +1,4 @@
+include:
+  - project: 'fpt-is/platform/ci-templates'
+    ref: main
+    file: 'sonar-maven.yml'

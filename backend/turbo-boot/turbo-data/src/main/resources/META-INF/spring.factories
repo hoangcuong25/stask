@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.AutoConfigurationImportFilter=com.fpt.framework.data.configuration.AutoConfigurationExclusion
+org.springframework.data.r2dbc.dialect.DialectResolver$R2dbcDialectProvider=com.fpt.framework.data.support.dialect.ClickHouseDialectProvider

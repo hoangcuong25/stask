@@ -80,9 +80,20 @@ docker-compose up -d
 - Web giao diện quản trị Mongo Express: `http://localhost:8081` (Tài khoản/Mật khẩu mặc định: `root / secretpassword`)
 - Script `docker/mongo-init/init-indexes.js` sẽ tự động tạo sẵn toàn bộ 12 collections và các compound index.
 
-### Bước 2: Chạy Backend Spring Boot
+### Bước 2: Cấu trúc & Khởi chạy Backend
+Thư mục `backend/` được chuẩn hóa tương tự cấu trúc microservices của FIS:
+- **`backend/turbo-boot`**: Bộ core framework reactive gồm 16 modules (`turbo-parent`, `turbo-web-api`, `turbo-data`, `turbo-security`, `turbo-logger`, v.v.).
+- **`backend/stask`**: Microservice quản lý công việc sWork Tasks kế thừa `com.fpt.framework:turbo-parent:1.2.8-SNAPSHOT`, xây dựng hoàn toàn theo chuẩn **Reactive (Project Reactor - `Mono` / `Flux`)**, sử dụng `@RequiredArgsConstructor` và cơ chế xử lý lỗi tập trung `DataException` / `DataIsNotFoundException`.
+  - Cấu hình Maven liên kết trực tiếp `<relativePath>../turbo-boot/pom.xml</relativePath>`.
+  - Khi cần bàn giao hoặc tích hợp vào hệ thống FIS, chỉ cần chuyển thư mục `stask` vào `fis/backend/stask` là chạy ngay.
+
 ```bash
-cd backend
+# Biên dịch turbo-boot (nếu lần đầu chạy hoặc cập nhật core)
+cd backend/turbo-boot
+mvn clean install -DskipTests
+
+# Khởi chạy sWork Tasks service
+cd ../stask
 mvn spring-boot:run
 ```
 - Backend REST API khởi chạy tại: `http://localhost:8080`
@@ -90,11 +101,12 @@ mvn spring-boot:run
 - *Lưu ý: `DataSeeder.java` sẽ tự động nạp sẵn dữ liệu mẫu thực tế (Người dùng Nguyễn Lan, Dự án WEB, các tasks WEB-101 đến WEB-108, checklists, worklogs).*
 
 ### Bước 3: Cấu trúc & Khởi chạy Frontend
-Thư mục `frontend/` được chuẩn hóa theo đúng mô hình kiến trúc chuẩn của FIS:
+Thư mục `frontend/` được chuẩn hóa theo đúng mô hình kiến trúc Micro-Frontend của FIS:
 - **`frontend/front-end`**: Front-end Root Portal (Single-SPA port 9000, cung cấp `flx-ui`, `khaos-service`, `sdk-common` tại `dist/npm/`).
 - **`frontend/stasks`**: Micro-frontend sWork Tasks độc lập.
   - Sử dụng các package dùng chung qua đường dẫn chuẩn: `file:../front-end/dist/npm/...`.
-  - Khi cần bàn giao hoặc tích hợp vào hệ thống FIS thực tế, chỉ cần chuyển thư mục `stasks` vào `fis/frontend/stasks` là hoạt động ngay lập tức mà không cần sửa code.
+  - Tích hợp gọi API qua `KhaosService` và cơ chế unwrap phản hồi reactive mượt mà.
+  - Khi cần bàn giao vào hệ thống FIS, chỉ cần chuyển thư mục `stasks` vào `fis/frontend/stasks` là hoạt động ngay lập tức.
 
 ```bash
 cd frontend/stasks

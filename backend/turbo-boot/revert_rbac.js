@@ -1,0 +1,1 @@
+db.rbac_permission.updateMany({resourcePattern: 'dashboard'}, { "$set": { resourcePattern: 'dashboard.dashboard' } }); db.acl_entry.updateMany({objectType: 'dashboard'}, { "$set": { objectType: 'dashboard.dashboard' } });

@@ -37,6 +37,13 @@ export class SworkApiService {
 
   constructor(private http: HttpClient) {}
 
+  private unwrap<T>(res: any): T {
+    if (res && res.data !== undefined) {
+      return res.data;
+    }
+    return res as T;
+  }
+
   private initUser(): User {
     const saved = localStorage.getItem('swork_current_user');
     if (saved) {
@@ -74,8 +81,8 @@ export class SworkApiService {
         }
         return list;
       }),
-      catchError(() => this.http.get<ApiResponse<User[]>>(`${this.baseUrl}/users`).pipe(
-        map(res => res.data || []),
+      catchError(() => this.http.get<any>(`${this.baseUrl}/users`).pipe(
+        map(res => this.unwrap<User[]>(res) || []),
         catchError(() => of(this.getMockUsers()))
       ))
     );
@@ -84,8 +91,8 @@ export class SworkApiService {
   getProjects(): Observable<Project[]> {
     return SworkService.getProjects().pipe(
       map(projects => (projects as unknown as Project[])),
-      catchError(() => this.http.get<ApiResponse<Project[]>>(`${this.baseUrl}/projects`).pipe(
-        map(res => res.data),
+      catchError(() => this.http.get<any>(`${this.baseUrl}/projects`).pipe(
+        map(res => this.unwrap<Project[]>(res) || []),
         catchError(() => of(this.getMockProjects()))
       ))
     );
@@ -94,8 +101,8 @@ export class SworkApiService {
   getProjectById(id: string): Observable<Project> {
     return SworkService.getProjectById(id).pipe(
       map(p => (p as unknown as Project)),
-      catchError(() => this.http.get<ApiResponse<Project>>(`${this.baseUrl}/projects/${id}`).pipe(
-        map(res => res.data),
+      catchError(() => this.http.get<any>(`${this.baseUrl}/projects/${id}`).pipe(
+        map(res => this.unwrap<Project>(res)),
         catchError(() => {
           const found = this.getMockProjects().find(p => p.id === id);
           return of(found || this.getMockProjects()[0]);
@@ -107,8 +114,8 @@ export class SworkApiService {
   updateProjectSettings(id: string, settings: any): Observable<Project> {
     return SworkService.updateProjectSettings(id, settings).pipe(
       map(p => (p as unknown as Project)),
-      catchError(() => this.http.put<ApiResponse<Project>>(`${this.baseUrl}/projects/${id}/settings`, settings).pipe(
-        map(res => res.data),
+      catchError(() => this.http.put<any>(`${this.baseUrl}/projects/${id}/settings`, settings).pipe(
+        map(res => this.unwrap<Project>(res)),
         catchError(() => {
           const p = this.getMockProjects()[0];
           p.settings = settings;
@@ -143,8 +150,8 @@ export class SworkApiService {
         if (filter.page !== undefined) params = params.set('page', filter.page);
         if (filter.size !== undefined) params = params.set('size', filter.size);
 
-        return this.http.get<ApiResponse<PageResponse<Task>>>(`${this.baseUrl}/tasks`, { params }).pipe(
-          map(res => res.data),
+        return this.http.get<any>(`${this.baseUrl}/tasks`, { params }).pipe(
+          map(res => this.unwrap<PageResponse<Task>>(res)),
           catchError(() => of(this.getFilteredMockTasks(filter)))
         );
       })
@@ -154,8 +161,8 @@ export class SworkApiService {
   updateTaskStatus(id: string, status: TaskStatus): Observable<Task> {
     return SworkService.updateTaskStatus(id, status).pipe(
       map(t => (t as unknown as Task)),
-      catchError(() => this.http.patch<ApiResponse<Task>>(`${this.baseUrl}/tasks/${id}/status?status=${status}`, {}).pipe(
-        map(res => res.data),
+      catchError(() => this.http.patch<any>(`${this.baseUrl}/tasks/${id}/status?status=${status}`, {}).pipe(
+        map(res => this.unwrap<Task>(res)),
         catchError(() => {
           const task = this.getMockTasks().find(t => t.id === id);
           if (task) {
@@ -171,8 +178,8 @@ export class SworkApiService {
   updateTask(id: string, taskData: any): Observable<Task> {
     return SworkService.updateTask(id, taskData).pipe(
       map(t => (t as unknown as Task)),
-      catchError(() => this.http.put<ApiResponse<Task>>(`${this.baseUrl}/tasks/${id}`, taskData).pipe(
-        map(res => res.data),
+      catchError(() => this.http.put<any>(`${this.baseUrl}/tasks/${id}`, taskData).pipe(
+        map(res => this.unwrap<Task>(res)),
         catchError(() => {
           const t = this.getMockTasks().find(x => x.id === id);
           if (t) Object.assign(t, taskData);
@@ -185,8 +192,8 @@ export class SworkApiService {
   toggleChecklist(taskId: string, checkItemId: string, isDone: boolean): Observable<Task> {
     return SworkService.toggleChecklist(taskId, checkItemId, isDone).pipe(
       map(t => (t as unknown as Task)),
-      catchError(() => this.http.patch<ApiResponse<Task>>(`${this.baseUrl}/tasks/${taskId}/checklists/${checkItemId}?isDone=${isDone}`, {}).pipe(
-        map(res => res.data),
+      catchError(() => this.http.patch<any>(`${this.baseUrl}/tasks/${taskId}/checklists/${checkItemId}?isDone=${isDone}`, {}).pipe(
+        map(res => this.unwrap<Task>(res)),
         catchError(() => {
           const task = this.getMockTasks().find(t => t.id === taskId);
           if (task && task.checklists) {
@@ -204,8 +211,8 @@ export class SworkApiService {
   createTask(taskData: any): Observable<Task> {
     return SworkService.createTask(taskData).pipe(
       map(t => (t as unknown as Task)),
-      catchError(() => this.http.post<ApiResponse<Task>>(`${this.baseUrl}/tasks`, taskData).pipe(
-        map(res => res.data),
+      catchError(() => this.http.post<any>(`${this.baseUrl}/tasks`, taskData).pipe(
+        map(res => this.unwrap<Task>(res)),
         catchError(() => {
           const newTask: Task = {
             id: 'task-' + Date.now(),
@@ -237,8 +244,8 @@ export class SworkApiService {
       map(w => (w as unknown as Worklog[])),
       catchError(() => {
         const url = projectId ? `${this.baseUrl}/worklogs/project/${projectId}` : `${this.baseUrl}/worklogs/user/${this.currentUserId}`;
-        return this.http.get<ApiResponse<Worklog[]>>(url).pipe(
-          map(res => res.data),
+        return this.http.get<any>(url).pipe(
+          map(res => this.unwrap<Worklog[]>(res) || []),
           catchError(() => of(this.getMockWorklogs()))
         );
       })
@@ -252,8 +259,8 @@ export class SworkApiService {
     };
     return SworkService.logTime(payload).pipe(
       map(w => (w as unknown as Worklog)),
-      catchError(() => this.http.post<ApiResponse<Worklog>>(`${this.baseUrl}/worklogs`, payload).pipe(
-        map(res => res.data),
+      catchError(() => this.http.post<any>(`${this.baseUrl}/worklogs`, payload).pipe(
+        map(res => this.unwrap<Worklog>(res)),
         catchError(() => {
           const wl: Worklog = {
             id: 'wl-' + Date.now(),
