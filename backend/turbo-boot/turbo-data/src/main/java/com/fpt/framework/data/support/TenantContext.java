@@ -12,10 +12,9 @@ import reactor.util.context.ContextView;
 public class TenantContext {
     public static final String TENANT_ID_CONTEXT_KEY = "Tenant-Id";
     public static Mono<Tenant> currentTenant() {
-//       return Mono
-//                .deferContextual(Mono::just)
-//                .filter(ct -> ct.hasKey(TENANT_ID_CONTEXT_KEY)).map(ct -> currentTenant(ct)).cast(Tenant.class);
-        return Mono.just(new Tenant("fpt-spro", "fpt-spro"));
+       return Mono
+                .deferContextual(Mono::just)
+                .filter(ct -> ct.hasKey(TENANT_ID_CONTEXT_KEY)).map(ct -> currentTenant(ct)).cast(Tenant.class);
     }
     public static Tenant currentTenant(ContextView context) {
         if (!context.hasKey(TENANT_ID_CONTEXT_KEY)) {

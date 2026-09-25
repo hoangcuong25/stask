@@ -4,6 +4,9 @@ server:
 turbo:
   data:
     platform: mongodb
+  web-api:
+    cors:
+      enable: true
 
 spring:
   application:
