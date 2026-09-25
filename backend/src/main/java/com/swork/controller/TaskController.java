@@ -14,8 +14,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.time.Instant;
 import java.util.List;
@@ -32,52 +32,53 @@ public class TaskController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Tạo mới công việc")
-    public ResponseEntity<ApiResponse<Task>> createTask(@Valid @RequestBody TaskCreateRequest request) {
-        Task created = taskService.createTask(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok("Tạo công việc thành công", created));
+    public Mono<ApiResponse<Task>> createTask(@Valid @RequestBody TaskCreateRequest request) {
+        return taskService.createTask(request)
+                .map(created -> ApiResponse.ok("Tạo công việc thành công", created));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Cập nhật chi tiết công việc")
-    public ResponseEntity<ApiResponse<Task>> updateTask(@PathVariable String id, @RequestBody TaskUpdateRequest request) {
-        Task updated = taskService.updateTask(id, request);
-        return ResponseEntity.ok(ApiResponse.ok("Cập nhật công việc thành công", updated));
+    public Mono<ApiResponse<Task>> updateTask(@PathVariable String id, @RequestBody TaskUpdateRequest request) {
+        return taskService.updateTask(id, request)
+                .map(updated -> ApiResponse.ok("Cập nhật công việc thành công", updated));
     }
 
     @PatchMapping("/{id}/status")
     @Operation(summary = "Cập nhật nhanh trạng thái công việc (TODO, IN_PROGRESS, IN_REVIEW, DONE, FAILED)")
-    public ResponseEntity<ApiResponse<Task>> updateStatus(@PathVariable String id, @RequestParam TaskStatus status) {
-        Task updated = taskService.updateTaskStatus(id, status);
-        return ResponseEntity.ok(ApiResponse.ok("Cập nhật trạng thái thành công", updated));
+    public Mono<ApiResponse<Task>> updateStatus(@PathVariable String id, @RequestParam TaskStatus status) {
+        return taskService.updateTaskStatus(id, status)
+                .map(updated -> ApiResponse.ok("Cập nhật trạng thái thành công", updated));
     }
 
     @PatchMapping("/{id}/checklists/{checkItemId}")
     @Operation(summary = "Đánh dấu hoàn thành / chưa hoàn thành mục checklist")
-    public ResponseEntity<ApiResponse<Task>> toggleChecklist(@PathVariable String id,
-                                                            @PathVariable String checkItemId,
-                                                            @RequestParam boolean isDone) {
-        Task updated = taskService.toggleChecklistItem(id, checkItemId, isDone);
-        return ResponseEntity.ok(ApiResponse.ok("Cập nhật checklist thành công", updated));
+    public Mono<ApiResponse<Task>> toggleChecklist(@PathVariable String id,
+                                                    @PathVariable String checkItemId,
+                                                    @RequestParam boolean isDone) {
+        return taskService.toggleChecklistItem(id, checkItemId, isDone)
+                .map(updated -> ApiResponse.ok("Cập nhật checklist thành công", updated));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Lấy chi tiết công việc theo ID")
-    public ResponseEntity<ApiResponse<Task>> getTaskById(@PathVariable String id) {
-        Task task = taskService.getTaskById(id);
-        return ResponseEntity.ok(ApiResponse.ok(task));
+    public Mono<ApiResponse<Task>> getTaskById(@PathVariable String id) {
+        return taskService.getTaskById(id)
+                .map(ApiResponse::ok);
     }
 
     @GetMapping("/key/{taskKey}")
     @Operation(summary = "Lấy chi tiết công việc theo mã (ví dụ: WEB-105)")
-    public ResponseEntity<ApiResponse<Task>> getTaskByKey(@PathVariable String taskKey) {
-        Task task = taskService.getTaskByKey(taskKey);
-        return ResponseEntity.ok(ApiResponse.ok(task));
+    public Mono<ApiResponse<Task>> getTaskByKey(@PathVariable String taskKey) {
+        return taskService.getTaskByKey(taskKey)
+                .map(ApiResponse::ok);
     }
 
     @GetMapping
     @Operation(summary = "Lọc công việc theo 4 tab My Tasks, dự án, giai đoạn, trạng thái, tìm kiếm")
-    public ResponseEntity<ApiResponse<PageResponse<Task>>> getTasks(
+    public Mono<ApiResponse<PageResponse<Task>>> getTasks(
             @RequestParam(required = false) MyTaskTab tab,
             @RequestParam(required = false) String userId,
             @RequestParam(required = false) String projectId,
@@ -104,21 +105,22 @@ public class TaskController {
                 .size(size)
                 .build();
 
-        PageResponse<Task> result = taskService.getTasksWithFilter(filter);
-        return ResponseEntity.ok(ApiResponse.ok(result));
+        return taskService.getTasksWithFilter(filter)
+                .map(ApiResponse::ok);
     }
 
     @GetMapping("/project/{projectId}")
     @Operation(summary = "Lấy tất cả công việc của một dự án")
-    public ResponseEntity<ApiResponse<List<Task>>> getTasksByProject(@PathVariable String projectId) {
-        List<Task> tasks = taskService.getTasksByProject(projectId);
-        return ResponseEntity.ok(ApiResponse.ok(tasks));
+    public Mono<ApiResponse<List<Task>>> getTasksByProject(@PathVariable String projectId) {
+        return taskService.getTasksByProject(projectId)
+                .collectList()
+                .map(ApiResponse::ok);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Xóa công việc")
-    public ResponseEntity<ApiResponse<Void>> deleteTask(@PathVariable String id) {
-        taskService.deleteTask(id);
-        return ResponseEntity.ok(ApiResponse.ok("Xóa công việc thành công", null));
+    public Mono<ApiResponse<Void>> deleteTask(@PathVariable String id) {
+        return taskService.deleteTask(id)
+                .thenReturn(ApiResponse.ok("Xóa công việc thành công", null));
     }
 }

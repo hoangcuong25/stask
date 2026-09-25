@@ -1,13 +1,12 @@
 package com.swork.repository;
 
 import com.swork.model.entity.CalendarEvent;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
 
 @Repository
-public interface CalendarEventRepository extends MongoRepository<CalendarEvent, String> {
-    List<CalendarEvent> findByUserIdOrderByStartTimeAsc(String userId);
-    List<CalendarEvent> findByProjectIdOrderByStartTimeAsc(String projectId);
+public interface CalendarEventRepository extends ReactiveMongoRepository<CalendarEvent, String> {
+    Flux<CalendarEvent> findByUserIdOrderByStartTimeAsc(String userId);
+    Flux<CalendarEvent> findByProjectIdOrderByStartTimeAsc(String projectId);
 }

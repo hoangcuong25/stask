@@ -1,15 +1,14 @@
 package com.swork.repository;
 
 import com.swork.model.entity.User;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Optional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Repository
-public interface UserRepository extends MongoRepository<User, String> {
-    Optional<User> findByEmail(String email);
-    List<User> findByDepartmentId(String departmentId);
-    List<User> findByIsActiveTrue();
+public interface UserRepository extends ReactiveMongoRepository<User, String> {
+    Mono<User> findByEmail(String email);
+    Flux<User> findByDepartmentId(String departmentId);
+    Flux<User> findByIsActiveTrue();
 }

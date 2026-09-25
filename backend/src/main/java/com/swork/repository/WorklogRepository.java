@@ -1,14 +1,13 @@
 package com.swork.repository;
 
 import com.swork.model.entity.Worklog;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
 
 @Repository
-public interface WorklogRepository extends MongoRepository<Worklog, String> {
-    List<Worklog> findByTaskIdOrderByWorkDateDesc(String taskId);
-    List<Worklog> findByProjectIdOrderByWorkDateDesc(String projectId);
-    List<Worklog> findByUserIdOrderByWorkDateDesc(String userId);
+public interface WorklogRepository extends ReactiveMongoRepository<Worklog, String> {
+    Flux<Worklog> findByTaskIdOrderByWorkDateDesc(String taskId);
+    Flux<Worklog> findByProjectIdOrderByWorkDateDesc(String projectId);
+    Flux<Worklog> findByUserIdOrderByWorkDateDesc(String userId);
 }

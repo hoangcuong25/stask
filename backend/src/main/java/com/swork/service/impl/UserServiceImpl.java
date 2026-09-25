@@ -5,8 +5,8 @@ import com.swork.model.entity.User;
 import com.swork.repository.UserRepository;
 import com.swork.service.UserService;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -18,18 +18,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllUsers() {
+    public Flux<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     @Override
-    public User getUserById(String id) {
+    public Mono<User> getUserById(String id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Người dùng", id));
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Người dùng", id)));
     }
 
     @Override
-    public User createUser(User user) {
+    public Mono<User> createUser(User user) {
         return userRepository.save(user);
     }
 }

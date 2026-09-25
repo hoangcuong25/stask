@@ -2,17 +2,17 @@ package com.swork.service;
 
 import com.swork.model.entity.Project;
 import com.swork.model.request.ProjectCreateRequest;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface ProjectService {
-    Project createProject(ProjectCreateRequest request);
-    Project getProjectById(String id);
-    Project getProjectByCode(String code);
-    List<Project> getAllProjects();
-    List<Project> getProjectsByMember(String userId);
-    Project updateProjectSettings(String id, Project.ProjectSettings settings);
-    Project addStage(String id, String stageName);
-    void updateProjectStats(String projectId);
-    void deleteProject(String id);
+    Mono<Project> createProject(ProjectCreateRequest request);
+    Mono<Project> getProjectById(String id);
+    Mono<Project> getProjectByCode(String code);
+    Flux<Project> getAllProjects();
+    Flux<Project> getProjectsByMember(String userId);
+    Mono<Project> updateProjectSettings(String id, Project.ProjectSettings settings);
+    Mono<Project> addStage(String id, String stageName);
+    Mono<Void> updateProjectStats(String projectId);
+    Mono<Void> deleteProject(String id);
 }

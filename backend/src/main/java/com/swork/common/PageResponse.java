@@ -30,4 +30,17 @@ public class PageResponse<T> {
                 .isLast(page.isLast())
                 .build();
     }
+
+    public static <T> PageResponse<T> of(List<T> content, long totalElements, int page, int size) {
+        int totalPages = size > 0 ? (int) Math.ceil((double) totalElements / size) : 0;
+        boolean isLast = page >= totalPages - 1;
+        return PageResponse.<T>builder()
+                .content(content)
+                .page(page)
+                .size(size)
+                .totalElements(totalElements)
+                .totalPages(totalPages)
+                .isLast(isLast)
+                .build();
+    }
 }

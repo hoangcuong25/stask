@@ -1,11 +1,12 @@
 package com.swork.repository;
 
+import com.swork.common.PageResponse;
 import com.swork.model.entity.Project;
 import com.swork.model.entity.Task;
 import com.swork.model.request.TaskFilterRequest;
-import org.springframework.data.domain.Page;
+import reactor.core.publisher.Mono;
 
 public interface TaskRepositoryCustom {
-    Page<Task> findTasksWithFilter(TaskFilterRequest filter);
-    Project.ProjectStats calculateProjectStats(String projectId);
+    Mono<PageResponse<Task>> findTasksWithFilter(TaskFilterRequest filter);
+    Mono<Project.ProjectStats> calculateProjectStats(String projectId);
 }

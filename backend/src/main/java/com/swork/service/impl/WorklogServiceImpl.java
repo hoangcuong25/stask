@@ -8,10 +8,10 @@ import com.swork.repository.TaskRepository;
 import com.swork.repository.WorklogRepository;
 import com.swork.service.WorklogService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.Instant;
-import java.util.List;
 
 @Service
 public class WorklogServiceImpl implements WorklogService {
@@ -25,49 +25,47 @@ public class WorklogServiceImpl implements WorklogService {
     }
 
     @Override
-    @Transactional
-    public Worklog createWorklog(WorklogCreateRequest request) {
-        Task task = taskRepository.findById(request.getTaskId())
-                .orElseThrow(() -> new ResourceNotFoundException("Công việc (Task)", request.getTaskId()));
+    public Mono<Worklog> createWorklog(WorklogCreateRequest request) {
+        return taskRepository.findById(request.getTaskId())
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Công việc (Task)", request.getTaskId())))
+                .flatMap(task -> {
+                    String projectId = request.getProjectId();
+                    if (projectId == null && task.getProject() != null) {
+                        projectId = task.getProject().getId();
+                    }
 
-        String projectId = request.getProjectId();
-        if (projectId == null && task.getProject() != null) {
-            projectId = task.getProject().getId();
-        }
+                    Worklog worklog = Worklog.builder()
+                            .taskId(task.getId())
+                            .projectId(projectId)
+                            .userId(request.getUserId())
+                            .durationMinutes(request.getDurationMinutes())
+                            .workDate(request.getWorkDate() != null ? request.getWorkDate() : Instant.now())
+                            .note(request.getNote())
+                            .build();
 
-        Worklog worklog = Worklog.builder()
-                .taskId(task.getId())
-                .projectId(projectId)
-                .userId(request.getUserId())
-                .durationMinutes(request.getDurationMinutes())
-                .workDate(request.getWorkDate() != null ? request.getWorkDate() : Instant.now())
-                .note(request.getNote())
-                .build();
+                    // Cập nhật số giờ thực tế đã làm vào task
+                    Task.Estimation est = task.getEstimation() != null ? task.getEstimation() : new Task.Estimation();
+                    double addedHours = request.getDurationMinutes() / 60.0;
+                    est.setSpentHours((est.getSpentHours() != null ? est.getSpentHours() : 0.0) + addedHours);
+                    task.setEstimation(est);
 
-        Worklog saved = worklogRepository.save(worklog);
-
-        // Cập nhật số giờ thực tế đã làm vào task
-        Task.Estimation est = task.getEstimation() != null ? task.getEstimation() : new Task.Estimation();
-        double addedHours = request.getDurationMinutes() / 60.0;
-        est.setSpentHours((est.getSpentHours() != null ? est.getSpentHours() : 0.0) + addedHours);
-        task.setEstimation(est);
-        taskRepository.save(task);
-
-        return saved;
+                    return taskRepository.save(task)
+                            .then(worklogRepository.save(worklog));
+                });
     }
 
     @Override
-    public List<Worklog> getWorklogsByTask(String taskId) {
+    public Flux<Worklog> getWorklogsByTask(String taskId) {
         return worklogRepository.findByTaskIdOrderByWorkDateDesc(taskId);
     }
 
     @Override
-    public List<Worklog> getWorklogsByProject(String projectId) {
+    public Flux<Worklog> getWorklogsByProject(String projectId) {
         return worklogRepository.findByProjectIdOrderByWorkDateDesc(projectId);
     }
 
     @Override
-    public List<Worklog> getWorklogsByUser(String userId) {
+    public Flux<Worklog> getWorklogsByUser(String userId) {
         return worklogRepository.findByUserIdOrderByWorkDateDesc(userId);
     }
 }

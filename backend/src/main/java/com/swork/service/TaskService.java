@@ -6,18 +6,19 @@ import com.swork.model.enums.TaskStatus;
 import com.swork.model.request.TaskCreateRequest;
 import com.swork.model.request.TaskFilterRequest;
 import com.swork.model.request.TaskUpdateRequest;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface TaskService {
-    Task createTask(TaskCreateRequest request);
-    Task updateTask(String id, TaskUpdateRequest request);
-    Task updateTaskStatus(String id, TaskStatus newStatus);
-    Task toggleChecklistItem(String taskId, String checkItemId, boolean isDone);
-    Task getTaskById(String id);
-    Task getTaskByKey(String taskKey);
-    PageResponse<Task> getTasksWithFilter(TaskFilterRequest filter);
-    List<Task> getTasksByProject(String projectId);
-    List<Task> getTasksByProjectAndStage(String projectId, String stageId);
-    void deleteTask(String id);
+    Mono<Task> createTask(TaskCreateRequest request);
+    Mono<Task> updateTask(String id, TaskUpdateRequest request);
+    Mono<Task> updateTaskStatus(String id, TaskStatus newStatus);
+    Mono<Task> toggleChecklistItem(String taskId, String checkItemId, boolean isDone);
+    Mono<Task> getTaskById(String id);
+    Mono<Task> getTaskByKey(String taskKey);
+    Mono<PageResponse<Task>> getTasksWithFilter(TaskFilterRequest filter);
+    Flux<Task> getTasksByProject(String projectId);
+    Flux<Task> getTasksByProjectAndStage(String projectId, String stageId);
+    Mono<Void> deleteTask(String id);
 }
+

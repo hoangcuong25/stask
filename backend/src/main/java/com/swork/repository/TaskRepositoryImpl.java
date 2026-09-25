@@ -1,18 +1,18 @@
 package com.swork.repository;
 
+import com.swork.common.PageResponse;
 import com.swork.model.entity.Project;
 import com.swork.model.entity.Task;
 import com.swork.model.enums.TaskStatus;
 import com.swork.model.request.TaskFilterRequest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,14 +20,14 @@ import java.util.List;
 @Repository
 public class TaskRepositoryImpl implements TaskRepositoryCustom {
 
-    private final MongoTemplate mongoTemplate;
+    private final ReactiveMongoTemplate mongoTemplate;
 
-    public TaskRepositoryImpl(MongoTemplate mongoTemplate) {
+    public TaskRepositoryImpl(ReactiveMongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
     }
 
     @Override
-    public Page<Task> findTasksWithFilter(TaskFilterRequest filter) {
+    public Mono<PageResponse<Task>> findTasksWithFilter(TaskFilterRequest filter) {
         List<Criteria> criteriaList = new ArrayList<>();
 
         // 1. Phân hệ My Tasks theo 4 tab đặc tả sWork
@@ -79,46 +79,49 @@ public class TaskRepositoryImpl implements TaskRepositoryCustom {
             query.addCriteria(new Criteria().andOperator(criteriaList.toArray(new Criteria[0])));
         }
 
-        long total = mongoTemplate.count(query, Task.class);
-
         int page = Math.max(0, filter.getPage());
         int size = filter.getSize() <= 0 ? 20 : filter.getSize();
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        query.with(pageRequest);
-        List<Task> tasks = mongoTemplate.find(query, Task.class);
+        Query pagedQuery = Query.of(query).with(pageRequest);
 
-        return new PageImpl<>(tasks, pageRequest, total);
+        Mono<Long> countMono = mongoTemplate.count(query, Task.class);
+        Mono<List<Task>> itemsMono = mongoTemplate.find(pagedQuery, Task.class).collectList();
+
+        return Mono.zip(countMono, itemsMono)
+                .map(tuple -> PageResponse.of(tuple.getT2(), tuple.getT1(), page, size));
     }
 
     @Override
-    public Project.ProjectStats calculateProjectStats(String projectId) {
+    public Mono<Project.ProjectStats> calculateProjectStats(String projectId) {
         Query query = new Query(Criteria.where("project.id").is(projectId));
-        List<Task> tasks = mongoTemplate.find(query, Task.class);
+        return mongoTemplate.find(query, Task.class)
+                .collectList()
+                .map(tasks -> {
+                    int total = tasks.size();
+                    int completed = 0;
+                    int inProgress = 0;
+                    int todo = 0;
 
-        int total = tasks.size();
-        int completed = 0;
-        int inProgress = 0;
-        int todo = 0;
+                    for (Task t : tasks) {
+                        if (t.getStatus() == TaskStatus.DONE) {
+                            completed++;
+                        } else if (t.getStatus() == TaskStatus.IN_PROGRESS || t.getStatus() == TaskStatus.IN_REVIEW) {
+                            inProgress++;
+                        } else if (t.getStatus() == TaskStatus.TODO) {
+                            todo++;
+                        }
+                    }
 
-        for (Task t : tasks) {
-            if (t.getStatus() == TaskStatus.DONE) {
-                completed++;
-            } else if (t.getStatus() == TaskStatus.IN_PROGRESS || t.getStatus() == TaskStatus.IN_REVIEW) {
-                inProgress++;
-            } else if (t.getStatus() == TaskStatus.TODO) {
-                todo++;
-            }
-        }
+                    double percent = total > 0 ? Math.round(((double) completed / total * 100.0) * 10.0) / 10.0 : 0.0;
 
-        double percent = total > 0 ? Math.round(((double) completed / total * 100.0) * 10.0) / 10.0 : 0.0;
-
-        return Project.ProjectStats.builder()
-                .totalTasks(total)
-                .completedTasks(completed)
-                .inProgressTasks(inProgress)
-                .todoTasks(todo)
-                .progressPercent(percent)
-                .build();
+                    return Project.ProjectStats.builder()
+                            .totalTasks(total)
+                            .completedTasks(completed)
+                            .inProgressTasks(inProgress)
+                            .todoTasks(todo)
+                            .progressPercent(percent)
+                            .build();
+                });
     }
 }

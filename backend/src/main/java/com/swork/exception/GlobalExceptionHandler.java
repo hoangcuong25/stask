@@ -41,11 +41,17 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.error("Dữ liệu bị trùng lặp khóa duy nhất (unique index) trong cơ sở dữ liệu"));
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationException(MethodArgumentNotValidException ex) {
+    @ExceptionHandler({MethodArgumentNotValidException.class, org.springframework.web.bind.support.WebExchangeBindException.class})
+    public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationException(Exception ex) {
         Map<String, String> errors = new HashMap<>();
-        for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
-            errors.put(fieldError.getField(), fieldError.getDefaultMessage());
+        if (ex instanceof MethodArgumentNotValidException manve) {
+            for (FieldError fieldError : manve.getBindingResult().getFieldErrors()) {
+                errors.put(fieldError.getField(), fieldError.getDefaultMessage());
+            }
+        } else if (ex instanceof org.springframework.web.bind.support.WebExchangeBindException webe) {
+            for (FieldError fieldError : webe.getBindingResult().getFieldErrors()) {
+                errors.put(fieldError.getField(), fieldError.getDefaultMessage());
+            }
         }
         ApiResponse<Map<String, String>> response = ApiResponse.<Map<String, String>>builder()
                 .success(false)

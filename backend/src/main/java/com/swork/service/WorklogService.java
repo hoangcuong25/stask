@@ -2,12 +2,13 @@ package com.swork.service;
 
 import com.swork.model.entity.Worklog;
 import com.swork.model.request.WorklogCreateRequest;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface WorklogService {
-    Worklog createWorklog(WorklogCreateRequest request);
-    List<Worklog> getWorklogsByTask(String taskId);
-    List<Worklog> getWorklogsByProject(String projectId);
-    List<Worklog> getWorklogsByUser(String userId);
+    Mono<Worklog> createWorklog(WorklogCreateRequest request);
+    Flux<Worklog> getWorklogsByTask(String taskId);
+    Flux<Worklog> getWorklogsByProject(String projectId);
+    Flux<Worklog> getWorklogsByUser(String userId);
 }
+

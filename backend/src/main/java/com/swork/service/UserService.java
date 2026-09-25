@@ -1,11 +1,11 @@
 package com.swork.service;
 
 import com.swork.model.entity.User;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface UserService {
-    List<User> getAllUsers();
-    User getUserById(String id);
-    User createUser(User user);
+    Flux<User> getAllUsers();
+    Mono<User> getUserById(String id);
+    Mono<User> createUser(User user);
 }

@@ -9,7 +9,8 @@ import com.swork.repository.ProjectRepository;
 import com.swork.repository.TaskRepository;
 import com.swork.service.ProjectService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,100 +28,103 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    @Transactional
-    public Project createProject(ProjectCreateRequest request) {
-        if (projectRepository.findByCode(request.getCode()).isPresent()) {
-            throw new BusinessException(ErrorCode.DUPLICATE_KEY, "Mã dự án " + request.getCode() + " đã tồn tại");
-        }
-
-        List<Project.ProjectStage> stages = request.getStages();
-        if (stages == null || stages.isEmpty()) {
-            stages = new ArrayList<>();
-            stages.add(Project.ProjectStage.builder().id("stage-1").name("Khảo sát & Thiết kế").position(1).build());
-            stages.add(Project.ProjectStage.builder().id("stage-2").name("Phát triển (Sprint)").position(2).build());
-            stages.add(Project.ProjectStage.builder().id("stage-3").name("Kiểm thử & Đánh giá").position(3).build());
-            stages.add(Project.ProjectStage.builder().id("stage-4").name("Nghiệm thu & Bàn giao").position(4).build());
-        }
-
-        Project project = Project.builder()
-                .name(request.getName())
-                .code(request.getCode().toUpperCase())
-                .tag(request.getTag())
-                .description(request.getDescription())
-                .departmentId(request.getDepartmentId())
-                .startDate(request.getStartDate())
-                .dueDate(request.getDueDate())
-                .members(request.getMembers() != null ? request.getMembers() : new ArrayList<>())
-                .stages(stages)
-                .settings(request.getSettings() != null ? request.getSettings() : new Project.ProjectSettings())
-                .createdBy(request.getCreatedBy())
-                .build();
-
-        return projectRepository.save(project);
-    }
-
-    @Override
-    public Project getProjectById(String id) {
-        return projectRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Dự án", id));
-    }
-
-    @Override
-    public Project getProjectByCode(String code) {
+    public Mono<Project> createProject(ProjectCreateRequest request) {
+        String code = request.getCode().toUpperCase();
         return projectRepository.findByCode(code)
-                .orElseThrow(() -> new ResourceNotFoundException("Dự án với mã: " + code));
+                .flatMap(existing -> Mono.<Project>error(
+                        new BusinessException(ErrorCode.DUPLICATE_KEY, "Mã dự án " + request.getCode() + " đã tồn tại")))
+                .switchIfEmpty(Mono.defer(() -> {
+                    List<Project.ProjectStage> stages = request.getStages();
+                    if (stages == null || stages.isEmpty()) {
+                        stages = new ArrayList<>();
+                        stages.add(Project.ProjectStage.builder().id("stage-1").name("Khảo sát & Thiết kế").position(1).build());
+                        stages.add(Project.ProjectStage.builder().id("stage-2").name("Phát triển (Sprint)").position(2).build());
+                        stages.add(Project.ProjectStage.builder().id("stage-3").name("Kiểm thử & Đánh giá").position(3).build());
+                        stages.add(Project.ProjectStage.builder().id("stage-4").name("Nghiệm thu & Bàn giao").position(4).build());
+                    }
+
+                    Project project = Project.builder()
+                            .name(request.getName())
+                            .code(code)
+                            .tag(request.getTag())
+                            .description(request.getDescription())
+                            .departmentId(request.getDepartmentId())
+                            .startDate(request.getStartDate())
+                            .dueDate(request.getDueDate())
+                            .members(request.getMembers() != null ? request.getMembers() : new ArrayList<>())
+                            .stages(stages)
+                            .settings(request.getSettings() != null ? request.getSettings() : new Project.ProjectSettings())
+                            .createdBy(request.getCreatedBy())
+                            .build();
+
+                    return projectRepository.save(project);
+                }));
     }
 
     @Override
-    public List<Project> getAllProjects() {
+    public Mono<Project> getProjectById(String id) {
+        return projectRepository.findById(id)
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Dự án", id)));
+    }
+
+    @Override
+    public Mono<Project> getProjectByCode(String code) {
+        return projectRepository.findByCode(code)
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Dự án với mã: " + code)));
+    }
+
+    @Override
+    public Flux<Project> getAllProjects() {
         return projectRepository.findAll();
     }
 
     @Override
-    public List<Project> getProjectsByMember(String userId) {
+    public Flux<Project> getProjectsByMember(String userId) {
         return projectRepository.findByMemberUserId(userId);
     }
 
     @Override
-    @Transactional
-    public Project updateProjectSettings(String id, Project.ProjectSettings settings) {
-        Project project = getProjectById(id);
-        project.setSettings(settings);
-        return projectRepository.save(project);
+    public Mono<Project> updateProjectSettings(String id, Project.ProjectSettings settings) {
+        return getProjectById(id)
+                .flatMap(project -> {
+                    project.setSettings(settings);
+                    return projectRepository.save(project);
+                });
     }
 
     @Override
-    @Transactional
-    public Project addStage(String id, String stageName) {
-        Project project = getProjectById(id);
-        List<Project.ProjectStage> stages = project.getStages();
-        if (stages == null) {
-            stages = new ArrayList<>();
-        }
-        int nextPos = stages.size() + 1;
-        stages.add(Project.ProjectStage.builder()
-                .id("stage-" + UUID.randomUUID().toString().substring(0, 8))
-                .name(stageName)
-                .position(nextPos)
-                .build());
-        project.setStages(stages);
-        return projectRepository.save(project);
+    public Mono<Project> addStage(String id, String stageName) {
+        return getProjectById(id)
+                .flatMap(project -> {
+                    List<Project.ProjectStage> stages = project.getStages();
+                    if (stages == null) {
+                        stages = new ArrayList<>();
+                    }
+                    int nextPos = stages.size() + 1;
+                    stages.add(Project.ProjectStage.builder()
+                            .id("stage-" + UUID.randomUUID().toString().substring(0, 8))
+                            .name(stageName)
+                            .position(nextPos)
+                            .build());
+                    project.setStages(stages);
+                    return projectRepository.save(project);
+                });
     }
 
     @Override
-    @Transactional
-    public void updateProjectStats(String projectId) {
-        projectRepository.findById(projectId).ifPresent(project -> {
-            Project.ProjectStats stats = taskRepository.calculateProjectStats(projectId);
-            project.setStats(stats);
-            projectRepository.save(project);
-        });
+    public Mono<Void> updateProjectStats(String projectId) {
+        return projectRepository.findById(projectId)
+                .flatMap(project -> taskRepository.calculateProjectStats(projectId)
+                        .flatMap(stats -> {
+                            project.setStats(stats);
+                            return projectRepository.save(project);
+                        }))
+                .then();
     }
 
     @Override
-    @Transactional
-    public void deleteProject(String id) {
-        Project project = getProjectById(id);
-        projectRepository.delete(project);
+    public Mono<Void> deleteProject(String id) {
+        return getProjectById(id)
+                .flatMap(projectRepository::delete);
     }
 }

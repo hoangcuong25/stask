@@ -1,7 +1,9 @@
 server:
   port: 8080
-  servlet:
-    context-path: /
+
+turbo:
+  data:
+    platform: mongodb
 
 spring:
   application:
@@ -28,4 +30,4 @@ logging:
   level:
     root: INFO
     com.swork: DEBUG
-    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+    org.springframework.data.mongodb.core.ReactiveMongoTemplate: DEBUG

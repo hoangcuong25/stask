@@ -43,7 +43,8 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (userRepository.count() > 0) {
+        Boolean hasUsers = userRepository.count().map(c -> c > 0).block();
+        if (Boolean.TRUE.equals(hasUsers)) {
             log.info("Cơ sở dữ liệu đã có dữ liệu, bỏ qua bước khởi tạo mẫu.");
             return;
         }
@@ -59,7 +60,7 @@ public class DataSeeder implements CommandLineRunner {
                     .avatarColor("#1890FF")
                     .role(Role.ADMIN)
                     .isActive(true)
-                    .build());
+                    .build()).block();
 
             User userTuan = userRepository.save(User.builder()
                     .fullName("Trần Tuấn")
@@ -68,7 +69,7 @@ public class DataSeeder implements CommandLineRunner {
                     .avatarColor("#52C41A")
                     .role(Role.MEMBER)
                     .isActive(true)
-                    .build());
+                    .build()).block();
 
             User userHoa = userRepository.save(User.builder()
                     .fullName("Lê Hoa")
@@ -77,7 +78,7 @@ public class DataSeeder implements CommandLineRunner {
                     .avatarColor("#FA8C16")
                     .role(Role.MEMBER)
                     .isActive(true)
-                    .build());
+                    .build()).block();
 
             User userMinh = userRepository.save(User.builder()
                     .fullName("Phạm Minh")
@@ -86,7 +87,7 @@ public class DataSeeder implements CommandLineRunner {
                     .avatarColor("#722ED1")
                     .role(Role.SYSTEM_OWNER)
                     .isActive(true)
-                    .build());
+                    .build()).block();
 
             // 2. Khởi tạo Departments
             Department techDept = departmentRepository.save(Department.builder()
@@ -95,7 +96,7 @@ public class DataSeeder implements CommandLineRunner {
                     .managerId(userLan.getId())
                     .description("Khối phát triển sản phẩm công nghệ và nghiên cứu giải pháp số")
                     .isActive(true)
-                    .build());
+                    .build()).block();
 
             Department devDept = departmentRepository.save(Department.builder()
                     .name("Phòng Phát triển Phần mềm")
@@ -104,13 +105,13 @@ public class DataSeeder implements CommandLineRunner {
                     .managerId(userTuan.getId())
                     .description("Đội ngũ kỹ sư phát triển phần mềm sWork")
                     .isActive(true)
-                    .build());
+                    .build()).block();
 
             userLan.setDepartmentId(techDept.getId());
             userTuan.setDepartmentId(devDept.getId());
             userHoa.setDepartmentId(devDept.getId());
             userMinh.setDepartmentId(techDept.getId());
-            userRepository.saveAll(List.of(userLan, userTuan, userHoa, userMinh));
+            userRepository.saveAll(List.of(userLan, userTuan, userHoa, userMinh)).collectList().block();
 
             // 3. Khởi tạo Project (Khớp PDF page 3 & 4)
             List<Project.ProjectStage> stages = List.of(
@@ -177,7 +178,7 @@ public class DataSeeder implements CommandLineRunner {
                     .members(members)
                     .settings(settings)
                     .createdBy(userLan.getId())
-                    .build());
+                    .build()).block();
 
             // 4. Khởi tạo Tasks mẫu (Đầy đủ cấu trúc, ví dụ WEB-105 theo PDF page 5-6)
             Task.ProjectRef projRef = Task.ProjectRef.builder()
@@ -207,7 +208,7 @@ public class DataSeeder implements CommandLineRunner {
                             Task.ChecklistItem.builder().id("ck-2").title("Vẽ BPMN flow").isDone(true).build(),
                             Task.ChecklistItem.builder().id("ck-3").title("Ký biên bản thống nhất").isDone(true).build()
                     ))
-                    .build());
+                    .build()).block();
 
             // Task 2: DONE
             Task t2 = taskRepository.save(Task.builder()
@@ -229,7 +230,7 @@ public class DataSeeder implements CommandLineRunner {
                             Task.ChecklistItem.builder().id("ck-4").title("Viết tài liệu thiết kế CSDL").isDone(true).build(),
                             Task.ChecklistItem.builder().id("ck-5").title("Tạo script khởi tạo index").isDone(true).build()
                     ))
-                    .build());
+                    .build()).block();
 
             // Task 3: DONE
             Task t3 = taskRepository.save(Task.builder()
@@ -251,7 +252,7 @@ public class DataSeeder implements CommandLineRunner {
                             Task.ChecklistItem.builder().id("ck-6").title("Cấu hình Spring Data").isDone(true).build(),
                             Task.ChecklistItem.builder().id("ck-7").title("Tích hợp Swagger OpenAPI").isDone(true).build()
                     ))
-                    .build());
+                    .build()).block();
 
             // Task 4: IN_PROGRESS
             Task t4 = taskRepository.save(Task.builder()
@@ -276,7 +277,7 @@ public class DataSeeder implements CommandLineRunner {
                             Task.ChecklistItem.builder().id("ck-9").title("Triển khai 4 Tab My Tasks").isDone(false).build(),
                             Task.ChecklistItem.builder().id("ck-10").title("Triển khai Kanban Stages").isDone(false).build()
                     ))
-                    .build());
+                    .build()).block();
 
             // Task 5: IN_PROGRESS (Khớp hoàn toàn đặc tả PDF page 5-6)
             Task t5 = taskRepository.save(Task.builder()
@@ -310,7 +311,7 @@ public class DataSeeder implements CommandLineRunner {
                             .reviewStatus(ReviewStatus.PENDING)
                             .feedback("Cần kiểm tra kỹ cơ chế chống spam bằng recaptcha")
                             .build())
-                    .build());
+                    .build()).block();
 
             // Task 6: TODO
             Task t6 = taskRepository.save(Task.builder()
@@ -334,7 +335,7 @@ public class DataSeeder implements CommandLineRunner {
                             Task.ChecklistItem.builder().id(UUID.randomUUID().toString()).title("Viết test case API").isDone(false).build(),
                             Task.ChecklistItem.builder().id(UUID.randomUUID().toString()).title("Kiểm thử giao diện E2E").isDone(false).build()
                     ))
-                    .build());
+                    .build()).block();
 
             // Task 7: TODO
             Task t7 = taskRepository.save(Task.builder()
@@ -351,7 +352,7 @@ public class DataSeeder implements CommandLineRunner {
                     .startDate(Instant.now().plus(10, ChronoUnit.DAYS))
                     .dueDate(Instant.now().plus(18, ChronoUnit.DAYS))
                     .estimation(Task.Estimation.builder().estimatedHours(16.0).spentHours(0.0).build())
-                    .build());
+                    .build()).block();
 
             // Task 8: TODO
             Task t8 = taskRepository.save(Task.builder()
@@ -369,7 +370,7 @@ public class DataSeeder implements CommandLineRunner {
                     .startDate(Instant.now().plus(20, ChronoUnit.DAYS))
                     .dueDate(Instant.now().plus(30, ChronoUnit.DAYS))
                     .estimation(Task.Estimation.builder().estimatedHours(12.0).spentHours(0.0).build())
-                    .build());
+                    .build()).block();
 
             // 5. Khởi tạo Worklogs mẫu
             worklogRepository.save(Worklog.builder()
@@ -379,7 +380,7 @@ public class DataSeeder implements CommandLineRunner {
                     .durationMinutes(180) // 3 tiếng khớp PDF p7
                     .workDate(Instant.now().minus(1, ChronoUnit.DAYS))
                     .note("Thiết kế khung giao diện biểu mẫu và tích hợp validation")
-                    .build());
+                    .build()).block();
 
             worklogRepository.save(Worklog.builder()
                     .taskId(t5.getId())
@@ -388,10 +389,10 @@ public class DataSeeder implements CommandLineRunner {
                     .durationMinutes(540) // 9 tiếng nữa = tổng 12.0 giờ
                     .workDate(Instant.now())
                     .note("Tích hợp API và xử lý thông báo phản hồi")
-                    .build());
+                    .build()).block();
 
             // 6. Tính toán lại tiến độ tổng thể của dự án
-            projectService.updateProjectStats(project.getId());
+            projectService.updateProjectStats(project.getId()).block();
 
             log.info(">>> Khởi tạo dữ liệu mẫu sWork thành công!");
         } catch (Exception e) {

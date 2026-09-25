@@ -5,68 +5,61 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.3</version>
-        <relativePath/>
+        <groupId>com.fpt.framework</groupId>
+        <artifactId>turbo-parent</artifactId>
+        <version>1.2.8-SNAPSHOT</version>
     </parent>
 
     <groupId>com.swork</groupId>
     <artifactId>swork-backend</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.2.8-SNAPSHOT</version>
     <name>swork-backend</name>
-    <description>sWork Backend Service - Spring Boot &amp; MongoDB</description>
+    <description>sWork Backend Service - Reactive Spring Boot &amp; MongoDB with Turbo Boot</description>
 
-    <properties>
-        <java.version>17</java.version>
-        <springdoc.version>2.5.0</springdoc.version>
-    </properties>
+    <repositories>
+        <repository>
+            <id>gitlab-fpt</id>
+            <url>https://gitlab.fis.vn/api/v4/projects/5486/packages/maven</url>
+        </repository>
+    </repositories>
 
     <dependencies>
-        <!-- Spring Boot Web -->
+        <!-- Turbo Boot Web API (Spring WebFlux, OpenAPI Swagger WebFlux, Validation) -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>com.fpt.framework</groupId>
+            <artifactId>turbo-web-api</artifactId>
         </dependency>
 
-        <!-- Spring Data MongoDB -->
+        <!-- Turbo Boot Data (Reactive MongoDB, ReactiveNoneRelationTemplate, BaseDocument) -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+            <groupId>com.fpt.framework</groupId>
+            <artifactId>turbo-data</artifactId>
         </dependency>
 
-        <!-- Bean Validation -->
+        <!-- Turbo Utility -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
+            <groupId>com.fpt.framework</groupId>
+            <artifactId>turbo-utility</artifactId>
         </dependency>
 
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- Swagger / OpenAPI UI -->
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>${springdoc.version}</version>
-        </dependency>
-
-        <!-- DevTools -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <version>${springboot.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-test</artifactId>
+            <version>3.6.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -76,14 +69,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
+                <version>${springboot.version}</version>
             </plugin>
         </plugins>
     </build>

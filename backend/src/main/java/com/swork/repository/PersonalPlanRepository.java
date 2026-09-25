@@ -1,12 +1,11 @@
 package com.swork.repository;
 
 import com.swork.model.entity.PersonalPlan;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
 
 @Repository
-public interface PersonalPlanRepository extends MongoRepository<PersonalPlan, String> {
-    List<PersonalPlan> findByUserIdOrderByStartDateDesc(String userId);
+public interface PersonalPlanRepository extends ReactiveMongoRepository<PersonalPlan, String> {
+    Flux<PersonalPlan> findByUserIdOrderByStartDateDesc(String userId);
 }

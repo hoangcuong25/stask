@@ -1,13 +1,13 @@
 package com.swork.repository;
 
 import com.swork.model.entity.Notification;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Repository
-public interface NotificationRepository extends MongoRepository<Notification, String> {
-    List<Notification> findByUserIdOrderByCreatedAtDesc(String userId);
-    long countByUserIdAndIsReadFalse(String userId);
+public interface NotificationRepository extends ReactiveMongoRepository<Notification, String> {
+    Flux<Notification> findByUserIdOrderByCreatedAtDesc(String userId);
+    Mono<Long> countByUserIdAndIsReadFalse(String userId);
 }

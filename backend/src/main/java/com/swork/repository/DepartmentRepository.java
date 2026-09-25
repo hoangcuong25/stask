@@ -1,15 +1,14 @@
 package com.swork.repository;
 
 import com.swork.model.entity.Department;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Optional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Repository
-public interface DepartmentRepository extends MongoRepository<Department, String> {
-    Optional<Department> findByCode(String code);
-    List<Department> findByParentId(String parentId);
-    List<Department> findByIsActiveTrue();
+public interface DepartmentRepository extends ReactiveMongoRepository<Department, String> {
+    Mono<Department> findByCode(String code);
+    Flux<Department> findByParentId(String parentId);
+    Flux<Department> findByIsActiveTrue();
 }

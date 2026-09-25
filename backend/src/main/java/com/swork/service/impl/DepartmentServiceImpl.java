@@ -5,8 +5,8 @@ import com.swork.model.entity.Department;
 import com.swork.repository.DepartmentRepository;
 import com.swork.service.DepartmentService;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
@@ -18,18 +18,18 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public List<Department> getAllDepartments() {
+    public Flux<Department> getAllDepartments() {
         return departmentRepository.findAll();
     }
 
     @Override
-    public Department getDepartmentById(String id) {
+    public Mono<Department> getDepartmentById(String id) {
         return departmentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Phòng ban", id));
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Phòng ban", id)));
     }
 
     @Override
-    public Department createDepartment(Department department) {
+    public Mono<Department> createDepartment(Department department) {
         return departmentRepository.save(department);
     }
 }

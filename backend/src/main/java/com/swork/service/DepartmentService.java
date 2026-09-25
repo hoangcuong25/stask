@@ -1,11 +1,11 @@
 package com.swork.service;
 
 import com.swork.model.entity.Department;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface DepartmentService {
-    List<Department> getAllDepartments();
-    Department getDepartmentById(String id);
-    Department createDepartment(Department department);
+    Flux<Department> getAllDepartments();
+    Mono<Department> getDepartmentById(String id);
+    Mono<Department> createDepartment(Department department);
 }

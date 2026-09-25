@@ -1,12 +1,11 @@
 package com.swork.repository;
 
 import com.swork.model.entity.ActivityLog;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
 
 @Repository
-public interface ActivityLogRepository extends MongoRepository<ActivityLog, String> {
-    List<ActivityLog> findByTargetIdOrderByCreatedAtDesc(String targetId);
+public interface ActivityLogRepository extends ReactiveMongoRepository<ActivityLog, String> {
+    Flux<ActivityLog> findByTargetIdOrderByCreatedAtDesc(String targetId);
 }

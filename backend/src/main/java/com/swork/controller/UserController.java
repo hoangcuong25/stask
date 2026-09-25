@@ -6,8 +6,8 @@ import com.swork.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -24,20 +24,24 @@ public class UserController {
 
     @GetMapping
     @Operation(summary = "Lấy danh sách người dùng")
-    public ResponseEntity<ApiResponse<List<User>>> getAllUsers() {
-        return ResponseEntity.ok(ApiResponse.ok(userService.getAllUsers()));
+    public Mono<ApiResponse<List<User>>> getAllUsers() {
+        return userService.getAllUsers()
+                .collectList()
+                .map(ApiResponse::ok);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Lấy thông tin người dùng theo ID")
-    public ResponseEntity<ApiResponse<User>> getUserById(@PathVariable String id) {
-        return ResponseEntity.ok(ApiResponse.ok(userService.getUserById(id)));
+    public Mono<ApiResponse<User>> getUserById(@PathVariable String id) {
+        return userService.getUserById(id)
+                .map(ApiResponse::ok);
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Tạo người dùng mới")
-    public ResponseEntity<ApiResponse<User>> createUser(@RequestBody User user) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.ok("Tạo người dùng thành công", userService.createUser(user)));
+    public Mono<ApiResponse<User>> createUser(@RequestBody User user) {
+        return userService.createUser(user)
+                .map(created -> ApiResponse.ok("Tạo người dùng thành công", created));
     }
 }
